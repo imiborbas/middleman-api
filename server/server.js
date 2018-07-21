@@ -7,17 +7,18 @@ var {Wallet} = require('./db/models/wallet')
 var {User} = require('./db/models/user')
 var {Developer} = require('./db/models/developer')
 
+var {createWallet} = require('./create-wallet')
+
 var app = express();
 
 app.use(bodyParser.json());
 
 // Create a New Wallet
-app.post('/wallets', (req, res) => {
-  var wallet = new Wallet({
-    address: req.body.address
-  });
-  wallet.save().then((doc) => {
-    res.send(doc);
+app.get('/wallets', (req, res) => {
+  createWallet().then((wallet) => {
+    res.send({
+      address: wallet.address
+    });
   }, (err) => {
     res.status(400).send(err);
   })
@@ -57,11 +58,11 @@ app.post('/wallets/:id/sign', (req, res) => {
 
 // Transfer $ from wallet to somewhere else
 // req.body must include two addr and amount and token type
-app.post('/wallets/:id/transfer', (req, res) = {
+app.post('/wallets/:id/transfer', (req, res) => {
   // check if the user has that amount in balance
   // check if it is a valid address
   // transfer amount (req.body.amount) of token_type (req.body.token) to address (req.body.to_addr)
-  
+
 }, (err) => {
   res.status(400).send();
 })
