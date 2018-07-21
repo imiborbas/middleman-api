@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
+var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose')
 var {Wallet} = require('./db/models/wallet')
 var {User} = require('./db/models/user')
@@ -30,6 +31,21 @@ app.get('/wallets', (req, res) => {
     });
   }, (err) => {
     res.stats(400).send(err);
+  })
+});
+
+app.get('/wallets/:id', (req, res) => {
+  // is it a valid id
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) { return res.status(404).send() }
+
+  Wallet.findById(id).then((wallet) => {
+    // was a wallet found
+    if (!wallet) { return res.status(404).send() }
+
+    res.send({wallet});
+  }, (err) => {
+    res.stats(400).send();
   })
 });
 
