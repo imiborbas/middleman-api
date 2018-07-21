@@ -8,6 +8,7 @@ var {User} = require('./db/models/user')
 var {Developer} = require('./db/models/developer')
 
 var {createWallet} = require('./create-wallet')
+var {getWalletById} = require('./get-wallet-by-id')
 
 var app = express();
 
@@ -26,18 +27,15 @@ app.get('/wallets', (req, res) => {
 
 // Get an existing Wallet
 app.get('/wallets/:id', (req, res) => {
-  // is it a valid id
-  var id = req.params.id;
-  if (!ObjectID.isValid(id)) { return res.status(404).send() }
-
-  Wallet.findById(id).then((wallet) => {
-    // was a wallet found
-    if (!wallet) { return res.status(404).send() }
-
+  getWalletById(req).then((wallet) => {
     res.send({wallet});
   }, (err) => {
-    res.stats(400).send();
-  })
+    if (err = '404') {
+      return res.status(404).send();
+    } else {
+      res.status(400).send();
+    }
+  });
 });
 
 // Check Wallet Balance
