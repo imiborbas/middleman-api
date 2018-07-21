@@ -20,7 +20,18 @@ app.post('/wallets', (req, res) => {
   }, (err) => {
     res.status(400).send(err);
   })
-})
+});
+
+app.get('/wallets', (req, res) => {
+  Wallet.find().then((wallets) => {
+    res.send({
+      wallets,
+      code: 'success'
+    });
+  }, (err) => {
+    res.stats(400).send(err);
+  })
+});
 
 app.listen(3000, () => {
   console.log('Started listening on port 3000');
