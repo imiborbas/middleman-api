@@ -5,6 +5,7 @@ var {getWalletById} = require('./get-wallet-by-id')
 
 var Web3 = require('web3');
 var web3 = new Web3();
+// var web3 = new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/9425cb4913f540db83c938c05d31dbb4')
 
 var createAccountFromKey = (id) => {
   return new Promise((resolve, reject) => {
@@ -49,6 +50,25 @@ var signMessage = (id, message) => {
   })
 }
 
+var signTransaction = (id, transaction) => {
+  return new Promise((resolve, reject) => {
+    // get the wallet id and create a temp account
+    createAccountFromKey(id).then((account) => {
+
+      // use the web3 sign function to sign something
+      var signedTransaction = account.signTransaction(transaction, account.privateKey);
+
+      // return signed string
+      resolve(signedTransaction);
+
+    }, (err) => {
+      reject(err);
+    })
+  }, (err) => {
+    reject(err);
+  })
+}
+
 var transferTokens = (req) => {
   return new Promise((resolve, reject) => {
 
@@ -62,4 +82,8 @@ var transferTokens = (req) => {
   })
 }
 
-module.exports = {signMessage}
+module.exports = {
+  signMessage,
+  signTransaction
+};
+// module.exports = {signTransaction};

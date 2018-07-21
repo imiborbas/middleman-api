@@ -10,6 +10,8 @@ var {Developer} = require('./db/models/developer')
 var {createWallet} = require('./create-wallet')
 var {getWalletById} = require('./get-wallet-by-id')
 var {signMessage} = require('./wallet-api-functions')
+var {signTransaction} = require('./wallet-api-functions')
+
 
 var app = express();
 
@@ -50,15 +52,20 @@ app.get('/wallets/:id/balance', (req, res) => {
 // Sign a transaction
 // req.body must include transaction to sign
 app.post('/wallets/:id/sign_transaction', (req, res) => {
-  // sign whatever is in req.body.transaction with the key in Wallet.findById(id).private_key
-}, (err) => {
-  res.status(400).send();
+    signTransaction(req.params.id, req.body.transaction).then((signedTransaction) => {
+      res.send({signedTransaction});
+    }, (err) => {
+      console.log(err);
+      res.status(400).send();
+    })
+  }, (err) => {
+    console.log(err);
+    res.status(400).send();
 })
 
-// Sign a transaction
+// Sign a message
 // req.body must include message to sign
 app.post('/wallets/:id/sign_message', (req, res) => {
-  // sign whatever is in req.body.message with the key in Wallet.findById(id).private_key
   signMessage(req.params.id, req.body.message).then((message) => {
     res.send({message});
   }, (err) => {
@@ -67,6 +74,8 @@ app.post('/wallets/:id/sign_message', (req, res) => {
 }, (err) => {
   res.status(400).send();
 })
+
+
 
 // Transfer $ from wallet to somewhere else
 // req.body must include two addr and amount and token type
