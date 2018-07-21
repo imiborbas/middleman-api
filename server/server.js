@@ -9,6 +9,7 @@ var {Developer} = require('./db/models/developer')
 
 var {createWallet} = require('./create-wallet')
 var {getWalletById} = require('./get-wallet-by-id')
+var {signMessage} = require('./wallet-api-functions')
 
 var app = express();
 
@@ -27,7 +28,7 @@ app.get('/wallets', (req, res) => {
 
 // Get an existing Wallet
 app.get('/wallets/:id', (req, res) => {
-  getWalletById(req).then((wallet) => {
+  getWalletById(req.params.id).then((wallet) => {
     res.send({wallet});
   }, (err) => {
     if (err = '404') {
@@ -46,10 +47,23 @@ app.get('/wallets/:id/balance', (req, res) => {
   res.status(400).send();
 })
 
-// Sign a transaction/message
-// req.body must include data to sign
-app.post('/wallets/:id/sign', (req, res) => {
-  // sign whatever is in req.body.data with the key in Wallet.findById(id).private_key
+// Sign a transaction
+// req.body must include transaction to sign
+app.post('/wallets/:id/sign_transaction', (req, res) => {
+  // sign whatever is in req.body.transaction with the key in Wallet.findById(id).private_key
+}, (err) => {
+  res.status(400).send();
+})
+
+// Sign a transaction
+// req.body must include message to sign
+app.post('/wallets/:id/sign_message', (req, res) => {
+  // sign whatever is in req.body.message with the key in Wallet.findById(id).private_key
+  signMessage(req.params.id, req.body.message).then((message) => {
+    res.send({message});
+  }, (err) => {
+    res.status(400).send();
+  })
 }, (err) => {
   res.status(400).send();
 })

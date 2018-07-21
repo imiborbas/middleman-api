@@ -2,10 +2,9 @@ var {mongoose} = require('./db/mongoose')
 var {ObjectID} = require('mongodb');
 var {Wallet} = require('./db/models/wallet')
 
-var getWalletById = (req) => {
+var getWalletById = (id) => {
   return new Promise((resolve, reject) => {
     // is it a valid id?
-    var id = req.params.id;
     if (!ObjectID.isValid(id)) { reject('400') }
 
     // find the wallet by id
