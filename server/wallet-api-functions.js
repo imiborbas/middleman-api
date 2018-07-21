@@ -5,7 +5,7 @@ var {getWalletById} = require('./get-wallet-by-id')
 
 var Web3 = require('web3');
 var web3 = new Web3();
-// var web3 = new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/9425cb4913f540db83c938c05d31dbb4')
+web3.setProvider(new web3.providers.HttpProvider('https://mainnet.infura.io/v3/9425cb4913f540db83c938c05d31dbb4'));
 
 var createAccountFromKey = (id) => {
   return new Promise((resolve, reject) => {
