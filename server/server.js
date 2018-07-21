@@ -32,7 +32,7 @@ app.get('/wallets', (req, res) => {
 // Get an existing Wallet
 app.get('/wallets/:id', (req, res) => {
   getWalletById(req.params.id).then((wallet) => {
-    res.send({wallet});
+    res.send({"address": wallet.address});
   }, (err) => {
     if (err = '404') {
       return res.status(404).send();
