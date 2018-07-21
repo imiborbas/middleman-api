@@ -9,6 +9,14 @@ var Wallet = mongoose.model('Wallet', {
     type: String,
     required: true,
     trim: true
+  },
+  private_key: {
+    type: String,
+    required: false
+  },
+  public_key: {
+    type: String,
+    required: false
   }
 });
 
