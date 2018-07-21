@@ -69,21 +69,7 @@ var signTransaction = (id, transaction) => {
   })
 }
 
-var transferTokens = (req) => {
-  return new Promise((resolve, reject) => {
-
-    // createAccountFromKey
-
-    // use web3 to transfer transfer tokens
-    // may have to set up an http provider/infura for this
-
-  }, (err) => {
-    reject(err);
-  })
-}
-
 module.exports = {
   signMessage,
   signTransaction
 };
-// module.exports = {signTransaction};

@@ -11,6 +11,7 @@ var {createWallet} = require('./create-wallet')
 var {getWalletById} = require('./get-wallet-by-id')
 var {signMessage} = require('./wallet-api-functions')
 var {signTransaction} = require('./wallet-api-functions')
+var {getWalletBalance} = require('./get-balance')
 
 
 var app = express();
@@ -43,9 +44,12 @@ app.get('/wallets/:id', (req, res) => {
 
 // Check Wallet Balance
 app.get('/wallets/:id/balance', (req, res) => {
-  // use The Graph or Cleargraph to fetch the wallet balance and return it
-
-}, (err) => {
+  getWalletBalance(req.params.id).then((balance) => {
+    res.send({"balance": balance});
+  }, (err) => {
+    res.status(400).send();
+  })
+  }, (err) => {
   res.status(400).send();
 })
 
