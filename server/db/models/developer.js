@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const validator = require('validator');
 
 // Developer Model
 var Developer = mongoose.model('Developer', {
@@ -6,18 +7,28 @@ var Developer = mongoose.model('Developer', {
     type: String,
     required: true,
     trim: true,
-    minlength: 1
+    minlength: 1,
+    unique: true,
+    validate: {
+      validator: validator.isEmail,
+      message: '{VALUE} is not a valid email'
+    }
   },
-  pass_hash: {
+  password: {
     type: String,
     required: true,
-    trim: true
+    minlength: 6
   },
-  api_key: {
-    type: String,
-    required: true,
-    trim: true
-  }
+  api_keys: [{
+    access: {
+      type: String,
+      required: true
+    },
+    api_key: {
+      type: String,
+      required: true
+    }
+  }]
 });
 
 module.exports = {Developer}

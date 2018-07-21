@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ = require('lodash');
 
 var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose')
@@ -22,7 +23,8 @@ app.use(bodyParser.json());
 app.get('/wallets', (req, res) => {
   createWallet().then((wallet) => {
     res.send({
-      address: wallet.address
+      address: wallet.address,
+      id: wallet._id 
     });
   }, (err) => {
     res.status(400).send(err);
@@ -88,6 +90,20 @@ app.post('/wallets/:id/transfer', (req, res) => {
   // check if it is a valid address
   // transfer amount (req.body.amount) of token_type (req.body.token) to address (req.body.to_addr)
 
+}, (err) => {
+  res.status(400).send();
+})
+
+// POST /developers
+app.post('/developers', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var developer = new Developer(body);
+
+  developer.save().then((doc) => {
+    res.send({developer})
+  }, (err) => {
+    res.status(400).send();
+  })
 }, (err) => {
   res.status(400).send();
 })
