@@ -3,9 +3,20 @@
   <head>{{> head}}</head>
   <body>
     {{> header}}
+    <div id='demo'>
+      <div id='create-wallet'>
+        <form id="create-wallet__form">
+          <label>User ID or Email This Wallet Belongs To:</label>
+          <input name="userid" type="text" placeholder="mayor@dani.town" autofocus />
+          <button type="submit">Create A Wallet</button>
+        </form>
+      </div>
+    </div>
     {{> footer}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
+
+      var myDeveloperId;
 
       // if no cookie, redirect to Login
       if (document.cookie == '') { window.location = '/login'; }
@@ -18,7 +29,8 @@
         }
       }, function(data) {
         //handle success
-        console.log('success: ', data);
+
+        myDeveloperId = data.account._id;
       }).fail(function(xhr, status, error) {
         // handle fail
         console.log('error: ', error);
@@ -27,7 +39,54 @@
       });
 
       // now try to get wallets and display them on the page
-      // first there needs to be a 'get wallet by developer' function
+      // TODO: this will work, but let me create the demo page first
+      // jQuery.get({
+      //   url: `/wallets/developer/${myDeveloperId}`,
+      //   headers: {
+      //     'x-auth-key': document.cookie
+      //   }
+      // }, function(data) {
+      //   //handle success
+      //   console.log('success: ', data.wallets);
+      // }).fail(function(xhr, status, error) {
+      //   // handle fail
+      //   console.log('error: ', error);
+      //   // if bad auth (401) redirect to Login
+      //   window.location = '/login';
+      // });
+
+      // when submit the form, generate a wallet for the user id
+
+      jQuery('#create-wallet__form').on('submit', function(e) {
+        e.preventDefault();
+
+        // get userid
+        var userid = jQuery('[name=userid]').val();
+        console.log(userid);
+
+        // send the data to the create wallet api
+        jQuery.post({
+          url: '/wallets/',
+          type: 'post',
+          data: {
+            "user_id": userid
+          },
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data, status) {
+          // clear form field
+          jQuery('[name=userid]').val("");
+
+          jQuery('body').append(data);
+
+        }).fail(function(xhr, status, error) {
+        // error handling
+          console.log(error);
+          jQuery('[name=userid]').val("");
+          jQuery('body').append('<div> Something went wrong.</div>');
+        });
+      })
 
     </script>
   </body>
