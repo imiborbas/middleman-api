@@ -8,7 +8,7 @@ var getWalletById = (walletId, developerId) => {
     if (!ObjectID.isValid(walletId)) { reject('400') }
 
     // find the wallet by id and make sure it belongs to the developer
-    Wallet.find({
+    Wallet.findOne({
       _id: walletId,
       _developer: developerId
     }).then((wallet) => {
@@ -16,6 +16,8 @@ var getWalletById = (walletId, developerId) => {
       if (!wallet) { reject('404') }
 
       // otherwise return the wallet
+      console.log('in getWalletById, wallet is: ', wallet);
+      console.log(typeof wallet);
       resolve(wallet);
     }, (err) => {
       reject(err);

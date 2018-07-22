@@ -5,7 +5,6 @@ var getWalletBalance = (walletId, developerId) => {
   return new Promise((resolve, reject) => {
 
     getWalletById(walletId, developerId).then((wallet) => {
-
       var query = `{ethereumAddress(address: \"${wallet.address}\") {balance { ether }}}`;
 
       // search Cleargraph for the wallet balance
