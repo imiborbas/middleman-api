@@ -21,26 +21,26 @@ var DeveloperSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
-  api_keys: [{
+  authTokens: [{
     access: {
       type: String,
       required: true
     },
-    api_key: {
+    authToken: {
       type: String,
       required: true
     }
   }]
 });
 
-DeveloperSchema.methods.generateAPIKey = function() {
+DeveloperSchema.methods.generateAuthToken = function() {
   var developer = this;
   var access = 'auth';
-  var api_key = jwt.sign({_id: developer._id.toHexString(), access}, 'secret').toString();
+  var authToken = jwt.sign({_id: developer._id.toHexString(), access}, 'secret').toString();
 
-  developer.api_keys = developer.api_keys.concat([{access, api_key}]);
+  developer.authTokens = developer.authTokens.concat([{access, authToken}]);
   return developer.save().then(() => {
-    return api_key;
+    return authToken;
   }, (err) => {
     console.log(err);
     return (err);
@@ -49,32 +49,47 @@ DeveloperSchema.methods.generateAPIKey = function() {
 
 // statics = model method not instance method
 // model method so this capital D developer
-DeveloperSchema.statics.findByAPIKey = function(apiKey) {
+DeveloperSchema.statics.findByAuthToken = function(authToken) {
   var Developer = this;
   var decoded;
 
   try {
-    decoded = jwt.verify(apiKey, 'secret');
+    decoded = jwt.verify(authToken, 'secret');
   } catch (err) {
     return Promise.reject();
   }
 
   return Developer.findOne({
     _id: decoded._id,
-    'api_keys.api_key': apiKey,
-    'api_keys.access': 'auth'
+    'authTokens.authToken': authToken,
+    'authTokens.access': 'auth'
   })
+}
+
+DeveloperSchema.statics.findByCredentials = function(email, password) {
+  var Developer = this;
+
+  return Developer.findOne({email}).then((developer) => {
+    if (!developer) { return Promise.reject('no account with that email'); }
+
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, developer.password, (err, res) => {
+        if (res) { resolve(developer); }
+        else { reject('wrong password'); }
+      });
+    });
+  });
 }
 
 DeveloperSchema.methods.toJSON = function() {
   var developer = this;
   var developerObj = developer.toObject();
 
-  var apiKeyArray = _.get(developerObj, 'api_keys');
+  var authTokenArray = _.get(developerObj, 'authTokens');
 
   var result = {
     account: _.pick(developerObj, ['_id', 'email']),
-    api_key: apiKeyArray[0].api_key
+    authToken: authTokenArray[0].authToken
   }
 
   return result;

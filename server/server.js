@@ -95,13 +95,13 @@ app.post('/wallets/:id/transfer', (req, res) => {
 })
 
 // Sign up
-app.post('/developers', (req, res) => {
+app.post('/signup', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var developer = new Developer(body);
 
   developer.save().then(() => {
-    return developer.generateAPIKey().then((api_key) => {
-      res.header('x-auth-key', api_key).send({developer})
+    return developer.generateAuthToken().then((authToken) => {
+      res.header('x-auth-key', authToken).send({developer})
     }, (err) => {
       console.log(err);
     });
@@ -116,10 +116,18 @@ app.post('/developers', (req, res) => {
 
 // Login
 app.post('/login', (req, res) => {
+  // find a dev with the email and hashed pw that = plain text pw
+  var body = _.pick(req.body, ['email', 'password']);
 
-}, (err) => {
-  res.status(400).send();
-})
+  Developer.findByCredentials(body.email, body.password).then((developer) => {
+    // generate a new token and send it back
+    return developer.generateAuthToken().then((authToken) => {
+      res.header('x-auth-key', authToken).send({developer});
+    });
+  }).catch((err) => {
+    res.status(400).send(err);
+  });
+});
 
 app.get('/developers/me', authenticate, (req, res) => {
   res.send(req.developer);

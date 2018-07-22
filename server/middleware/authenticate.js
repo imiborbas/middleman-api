@@ -1,15 +1,15 @@
 var {Developer} = require('./../db/models/developer');
 
 var authenticate = (req, res, next) => {
-  var apiKey = req.header('x-auth-key');
+  var authToken = req.header('x-auth-key');
 
-  Developer.findByAPIKey(apiKey).then((developer) => {
+  Developer.findByAuthToken(authToken).then((developer) => {
     if (!developer) {
       // valid token, but no user
       res.status(401).send();
     }
     req.developer = developer;
-    req.apiKey = apiKey;
+    req.authToken = authToken;
     next();
   }).catch((err) => {
     res.status(401).send();
