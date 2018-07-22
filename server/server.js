@@ -64,7 +64,7 @@ app.get('/signup', (req, res) => {
 
 app.get('/developers', (req, res) => {
  // render a dev portal homepage
- res.render('home.hbs', {
+ res.render('developer.hbs', {
    pageTitle: 'Kelp Developer Portal'
  })
 })

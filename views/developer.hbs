@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>{{> head}}</head>
+  <body>
+    {{> header}}
+    {{> footer}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+
+      // if no cookie, redirect to Login
+      if (document.cookie == '') { window.location = '/login'; }
+
+      // make a request to the api using cookie as auth header
+      jQuery.get({
+        url: '/developers/me',
+        headers: {
+          'x-auth-key': document.cookie
+        }
+      }, function(data) {
+        //handle success
+        console.log('success: ', data);
+      }).fail(function(xhr, status, error) {
+        // handle fail
+        console.log('error: ', error);
+        // if bad auth (401) redirect to Login
+        window.location = '/login';
+      });
+
+    </script>
+  </body>
+</html>

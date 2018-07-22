@@ -31,7 +31,7 @@
 
           // set cookie and then will need to check the cookie to load /developers
           // in /developers call the api and send whatever is in doc.cookie as auth header
-          // if 400/401, redirect the user to /login 
+          // if 400/401, redirect the user to /login
           var authToken = data.developer.authToken;
 
           document.cookie = authToken;
@@ -45,9 +45,6 @@
           jQuery('[name=password]').val("");
           jQuery('#emailPwForm').append('<div id="invalid-signup-message">Invalid creds, but you can try again.</div>');
         });
-
-        // and log the user in
-
       })
     </script>
   </body>
