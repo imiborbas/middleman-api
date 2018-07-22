@@ -1,21 +1,21 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('lodash');
 
-var {ObjectID} = require('mongodb');
-var {mongoose} = require('./db/mongoose')
-var {Wallet} = require('./db/models/wallet')
-var {User} = require('./db/models/user')
-var {Developer} = require('./db/models/developer')
+const {ObjectID} = require('mongodb');
+const {mongoose} = require('./db/mongoose')
+const {Wallet} = require('./db/models/wallet')
+const {User} = require('./db/models/user')
+const {Developer} = require('./db/models/developer')
 
-var {createWallet} = require('./create-wallet')
-var {getWalletById} = require('./get-wallet-by-id')
-var {signMessage} = require('./wallet-api-functions')
-var {signTransaction} = require('./wallet-api-functions')
-var {getWalletBalance} = require('./get-balance')
+const {createWallet} = require('./create-wallet')
+const {getWalletById} = require('./get-wallet-by-id')
+const {signMessage} = require('./wallet-api-functions')
+const {signTransaction} = require('./wallet-api-functions')
+const {getWalletBalance} = require('./get-balance')
 
 
-var app = express();
+const app = express();
 
 app.use(bodyParser.json());
 
@@ -24,7 +24,7 @@ app.get('/wallets', (req, res) => {
   createWallet().then((wallet) => {
     res.send({
       address: wallet.address,
-      id: wallet._id 
+      id: wallet._id
     });
   }, (err) => {
     res.status(400).send(err);
@@ -94,16 +94,29 @@ app.post('/wallets/:id/transfer', (req, res) => {
   res.status(400).send();
 })
 
-// POST /developers
+// Sign up
 app.post('/developers', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var developer = new Developer(body);
 
-  developer.save().then((doc) => {
-    res.send({developer})
+  developer.save().then(() => {
+    return developer.generateAPIKey().then((api_key) => {
+      res.header('x-auth-key', api_key).send({developer})
+    }, (err) => {
+      console.log(err);
+    });
   }, (err) => {
     res.status(400).send();
+    console.log(err);
   })
+}, (err) => {
+  res.status(400).send();
+  console.log(err);
+})
+
+// Login
+app.post('/login', (req, res) => {
+
 }, (err) => {
   res.status(400).send();
 })

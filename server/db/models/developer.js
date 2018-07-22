@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
-// Developer Model
-var Developer = mongoose.model('Developer', {
+var DeveloperSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -30,5 +31,36 @@ var Developer = mongoose.model('Developer', {
     }
   }]
 });
+
+DeveloperSchema.methods.generateAPIKey = function() {
+  var developer = this;
+  var access = 'auth';
+  var api_key = jwt.sign({_id: developer._id.toHexString(), access}, 'secret').toString();
+
+  developer.api_keys = developer.api_keys.concat([{access, api_key}]);
+  return developer.save().then(() => {
+    return api_key;
+  }, (err) => {
+    console.log(err);
+    return (err);
+  });
+}; //arrow functions do not bind a this keyword, and we need one here
+
+DeveloperSchema.methods.toJSON = function() {
+  var developer = this;
+  var developerObj = developer.toObject();
+
+  var apiKeyArray = _.get(developerObj, 'api_keys');
+
+  var result = {
+    account: _.pick(developerObj, ['_id', 'email']),
+    api_key: apiKeyArray[0].api_key
+  }
+
+  return result;
+};
+
+// Developer Model
+var Developer = mongoose.model('Developer', DeveloperSchema);
 
 module.exports = {Developer}
