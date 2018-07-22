@@ -20,8 +20,8 @@ const app = express();
 app.use(bodyParser.json());
 
 // Create a New Wallet
-app.get('/wallets', (req, res) => {
-  createWallet().then((wallet) => {
+app.post('/wallets', authenticate, (req, res) => {
+  createWallet(req.body.user_id, req.developer._id).then((wallet) => {
     res.send({
       address: wallet.address,
       id: wallet._id

@@ -12,12 +12,14 @@ var createEntropy= () => {
   var randomNumber = distribution(engine);
 }
 
-var createWallet = () => {
+var createWallet = (userId, developerId) => {
   return new Promise((resolve, reject) => {
     var walletObj = web3.eth.accounts.create(createEntropy());
     var wallet = new Wallet({
       address: walletObj.address,
-      private_key: walletObj.privateKey
+      private_key: walletObj.privateKey,
+      user_id: userId,
+      _developer: developerId
     });
     wallet.save().then((wallet) => {
       resolve(wallet);
