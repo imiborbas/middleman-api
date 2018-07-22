@@ -11,6 +11,7 @@ const {Developer} = require('./db/models/developer');
 
 const {createWallet} = require('./create-wallet');
 const {getWalletById} = require('./get-wallet-by-id');
+const {getWalletByDeveloper} = require('./get-wallet-by-id');
 const {signMessage} = require('./wallet-api-functions');
 const {signTransaction} = require('./wallet-api-functions');
 const {getWalletBalance} = require('./get-balance');
@@ -102,6 +103,14 @@ app.get('/wallets/:id', authenticate, (req, res) => {
     } else {
       res.status(400).send();
     }
+  });
+});
+
+app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
+  getWalletByDeveloper(req.developer._id).then((wallets) => {
+      res.send({wallets});
+  }).catch((e) => {
+    res.send(e);
   });
 });
 

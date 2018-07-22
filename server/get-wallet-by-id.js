@@ -25,4 +25,18 @@ var getWalletById = (walletId, developerId) => {
   })
 };
 
+var getWalletByDeveloper = (developerId) => {
+  return new Promise((resolve, reject) => {
+    // is it a valid id?
+    if (!ObjectID.isValid(developerId)) { console.log('not a valid id'); reject('400') }
+
+    Wallet.find({ _developer: developerId }).then((wallets) => {
+      console.log('wallets: ', wallets);
+      if (!wallets) { reject('404') }
+      resolve(wallets);
+    })
+  })
+}
+
 module.exports = {getWalletById};
+module.exports = {getWalletByDeveloper};
