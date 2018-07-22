@@ -4,16 +4,16 @@ const _ = require('lodash');
 
 const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose')
-const {Wallet} = require('./db/models/wallet')
-const {User} = require('./db/models/user')
-const {Developer} = require('./db/models/developer')
+const {Wallet} = require('./db/models/wallet');
+const {User} = require('./db/models/user');
+const {Developer} = require('./db/models/developer');
 
-const {createWallet} = require('./create-wallet')
-const {getWalletById} = require('./get-wallet-by-id')
-const {signMessage} = require('./wallet-api-functions')
-const {signTransaction} = require('./wallet-api-functions')
-const {getWalletBalance} = require('./get-balance')
-
+const {createWallet} = require('./create-wallet');
+const {getWalletById} = require('./get-wallet-by-id');
+const {signMessage} = require('./wallet-api-functions');
+const {signTransaction} = require('./wallet-api-functions');
+const {getWalletBalance} = require('./get-balance');
+const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 
@@ -120,6 +120,10 @@ app.post('/login', (req, res) => {
 }, (err) => {
   res.status(400).send();
 })
+
+app.get('/developers/me', authenticate, (req, res) => {
+  res.send(req.developer);
+});
 
 app.listen(3000, () => {
   console.log('Started listening on port 3000');

@@ -46,6 +46,25 @@ DeveloperSchema.methods.generateAPIKey = function() {
   });
 }; //arrow functions do not bind a this keyword, and we need one here
 
+// statics = model method not instance method
+// model method so this capital D developer
+DeveloperSchema.statics.findByAPIKey = function(apiKey) {
+  var Developer = this;
+  var decoded;
+
+  try {
+    decoded = jwt.verify(apiKey, 'secret');
+  } catch (err) {
+    return Promise.reject();
+  }
+
+  return Developer.findOne({
+    _id: decoded._id,
+    'api_keys.api_key': apiKey,
+    'api_keys.access': 'auth'
+  })
+}
+
 DeveloperSchema.methods.toJSON = function() {
   var developer = this;
   var developerObj = developer.toObject();
