@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
+const hbs = require('hbs');
 
 const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose')
@@ -17,7 +18,37 @@ const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 
+app.set('view engine', 'hbs');
+hbs.registerPartials(__dirname + '/../views/partials');
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
+
+// Handlebars helpers (name of helper, func to run)
+
+hbs.registerHelper('getCurrentYear', () => {
+  return new Date().getFullYear();
+});
+
+hbs.registerHelper('toUpperCase', (text) => {
+  return text.toUpperCase();
+})
+
+// Views
+
+app.get('/', (req, res) => {
+  res.render('home.hbs', {
+    pageTitle: 'Home Page',
+    welcomeMessage: 'welcome!'
+  })
+})
+
+app.get('/about', (req, res) => {
+  res.render('about.hbs', {
+    pageTitle: 'About Page'
+  });
+})
+
+// API
 
 // Create a New Wallet
 app.post('/wallets', authenticate, (req, res) => {
