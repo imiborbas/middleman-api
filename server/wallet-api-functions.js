@@ -14,7 +14,7 @@ var createAccountFromKey = (walletId, developerId) => {
     // get the wallet id from req
     getWalletById(walletId, developerId).then((wallet) => {
       // use web3 to create an account from the private key
-      var account = web3.eth.accounts.privateKeyToAccount(wallet[0].private_key);
+      var account = web3.eth.accounts.privateKeyToAccount(wallet.private_key);
 
       // return the account
       resolve(account);
