@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>{{> head}}</head>
+  <body>
+    {{> header}}
+    {{> emailPwForm}}
+    <p><a href='/login'>Login Instead</a></p>
+
+    {{> footer}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      //on 2 args: name of event, function to call
+      // e is event obj
+      jQuery('#emailPwForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // send the data to the signup api
+        // get email and pw values
+        var email = jQuery('[name=email]').val();
+        var pw = jQuery('[name=password]').val();
+
+        console.log(email, pw);
+
+        // clear form field
+
+        // and log the user in
+
+      })
+    </script>
+  </body>
+</html>

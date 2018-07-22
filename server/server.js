@@ -35,6 +35,7 @@ hbs.registerHelper('toUpperCase', (text) => {
 
 // Views
 
+// delete this one
 app.get('/', (req, res) => {
   res.render('home.hbs', {
     pageTitle: 'Home Page',
@@ -42,10 +43,38 @@ app.get('/', (req, res) => {
   })
 })
 
+// delete this one
 app.get('/about', (req, res) => {
   res.render('about.hbs', {
     pageTitle: 'About Page'
   });
+})
+
+app.get('/login', (req, res) => {
+  // render a login page
+  res.render('login.hbs', {
+    pageTitle: 'Login | Kelp'
+  })
+})
+
+app.get('/signup', (req, res) => {
+  // render a signup page
+  res.render('signup.hbs', {
+    pageTitle: 'Join | Kelp'
+  })
+})
+
+
+app.get('/developers', (req, res) => {
+ // render a dev portal homepage
+})
+
+app.get('/account', (req, res) => {
+  // render an account settings page
+})
+
+app.get('developers/gui', (req, res) => {
+  // render a gui for trying out the api
 })
 
 // API
@@ -114,7 +143,7 @@ app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
 })
 
 // Sign up
-app.post('/signup', (req, res) => {
+app.post('/developers/signup', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var developer = new Developer(body);
 
@@ -134,7 +163,7 @@ app.post('/signup', (req, res) => {
 })
 
 // Login
-app.post('/login', (req, res) => {
+app.post('/developers/login', (req, res) => {
   // find a dev with the email and hashed pw that = plain text pw
   var body = _.pick(req.body, ['email', 'password']);
 
