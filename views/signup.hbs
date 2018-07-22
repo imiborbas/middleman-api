@@ -29,10 +29,15 @@
           jQuery('[name=email]').val("");
           jQuery('[name=password]').val("");
 
+          // set cookie and then will need to check the cookie to load /developers
+          // in /developers call the api and send whatever is in doc.cookie as auth header
+          // if 400/401, redirect the user to /login 
+          var authToken = data.developer.authToken;
+
+          document.cookie = authToken;
+
           //redirect the user to the developer page
           window.location = '/developers';
-
-          //TODO need to set cookie and then check the cookie to load /developers
 
         }).fail(function(xhr, status, error) {
         // error handling
