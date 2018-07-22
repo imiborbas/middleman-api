@@ -12,6 +12,11 @@
         </form>
       </div>
     </div>
+    <div id="wallet-creation-success-message"></div>
+    <div id="wallet-list">
+      <ul id="wallet-list__wallets">
+      </ul>
+    </div>
     {{> footer}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
@@ -39,30 +44,29 @@
       });
 
       // now try to get wallets and display them on the page
-      // TODO: this will work, but let me create the demo page first
-      // jQuery.get({
-      //   url: `/wallets/developer/${myDeveloperId}`,
-      //   headers: {
-      //     'x-auth-key': document.cookie
-      //   }
-      // }, function(data) {
-      //   //handle success
-      //   console.log('success: ', data.wallets);
-      // }).fail(function(xhr, status, error) {
-      //   // handle fail
-      //   console.log('error: ', error);
-      //   // if bad auth (401) redirect to Login
-      //   window.location = '/login';
-      // });
+    jQuery.get({
+        url: `/wallets/developer/${myDeveloperId}`,
+        headers: {
+          'x-auth-key': document.cookie
+        }
+      }, function(data) {
+      //handle success
+        jQuery.each(data.wallets, function (index, value) {
+          jQuery('#wallet-list__wallets').append(`<li>${data.wallets[index].address}</li>`);
+        })
+      }).fail(function(xhr, status, error) {
+        // handle fail
+        console.log('error: ', error);
+        // if bad auth (401) redirect to Login
+        window.location = '/login';
+      });
 
       // when submit the form, generate a wallet for the user id
-
       jQuery('#create-wallet__form').on('submit', function(e) {
         e.preventDefault();
 
         // get userid
         var userid = jQuery('[name=userid]').val();
-        console.log(userid);
 
         // send the data to the create wallet api
         jQuery.post({
@@ -78,7 +82,10 @@
           // clear form field
           jQuery('[name=userid]').val("");
 
-          jQuery('body').append(data);
+          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address ${data.wallet.address} for the user ${data.wallet.user_id}</p>`);
+
+          // add the new wallet to the list
+          jQuery('#wallet-list__wallets').append(`<li>${data.wallet.address}</li>`);
 
         }).fail(function(xhr, status, error) {
         // error handling

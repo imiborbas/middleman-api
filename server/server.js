@@ -83,10 +83,7 @@ app.get('developers/gui', (req, res) => {
 // Create a New Wallet
 app.post('/wallets', authenticate, (req, res) => {
   createWallet(req.body.user_id, req.developer._id).then((wallet) => {
-    res.send({
-      address: wallet.address,
-      id: wallet._id
-    });
+    res.send({wallet});
   }, (err) => {
     res.status(400).send(err);
   })
