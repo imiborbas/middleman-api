@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var DeveloperSchema = new mongoose.Schema({
   email: {
@@ -78,6 +79,22 @@ DeveloperSchema.methods.toJSON = function() {
 
   return result;
 };
+
+DeveloperSchema.pre('save', function(next) {
+  var developer = this;
+
+  if (developer.isModified('password')) {
+    // gen salt and hash
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(developer.password, salt, (err, hash) => {
+        developer.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
 
 // Developer Model
 var Developer = mongoose.model('Developer', DeveloperSchema);
