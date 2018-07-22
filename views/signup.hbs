@@ -14,14 +14,32 @@
       jQuery('#emailPwForm').on('submit', function(e) {
         e.preventDefault();
 
-        // send the data to the signup api
         // get email and pw values
         var email = jQuery('[name=email]').val();
         var pw = jQuery('[name=password]').val();
 
         console.log(email, pw);
 
-        // clear form field
+        // send the data to the signup api
+        jQuery.post('/developers/signup', {
+          "email": email,
+          "password": pw
+        }, function(data, status) {
+          // clear form field
+          jQuery('[name=email]').val("");
+          jQuery('[name=password]').val("");
+
+          //redirect the user to the developer page
+          window.location = '/developers';
+
+          //TODO need to set cookie and then check the cookie to load /developers
+
+        }).fail(function(xhr, status, error) {
+        // error handling
+          jQuery('[name=email]').val("");
+          jQuery('[name=password]').val("");
+          jQuery('#emailPwForm').append('<div id="invalid-signup-message">Invalid creds, but you can try again.</div>');
+        });
 
         // and log the user in
 

@@ -22,16 +22,13 @@ app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/../views/partials');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
+app.use(express.urlencoded());
 
 // Handlebars helpers (name of helper, func to run)
 
 hbs.registerHelper('getCurrentYear', () => {
   return new Date().getFullYear();
 });
-
-hbs.registerHelper('toUpperCase', (text) => {
-  return text.toUpperCase();
-})
 
 // Views
 
@@ -67,6 +64,9 @@ app.get('/signup', (req, res) => {
 
 app.get('/developers', (req, res) => {
  // render a dev portal homepage
+ res.render('home.hbs', {
+   pageTitle: 'Kelp Developer Portal'
+ })
 })
 
 app.get('/account', (req, res) => {
