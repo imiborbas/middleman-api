@@ -13,15 +13,32 @@
       </div>
     </div>
     <div id="wallet-creation-success-message"></div>
-    <div id="wallet-list">
-      <ul id="wallet-list__wallets">
-      </ul>
-    </div>
+    <div id="wallet-table"></div>
     {{> footer}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
       var myDeveloperId;
+
+      // Wallet id to createdAt date
+      var createdAt = (walletId) => {
+        return new Date(parseInt(walletId.substring(0, 8), 16) * 1000);
+      };
+
+      // get balance from cleargraph
+      var getWalletBalance = (walletId) => {
+        jQuery.get({
+          url: `/wallets/${walletId}/balance`,
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data) {
+            console.log(data);
+            return data;
+          })
+        };
+
+        getWalletBalance('5b54fd0b14d5ce92608d8903');
 
       // if no cookie, redirect to Login
       if (document.cookie == '') { window.location = '/login'; }
@@ -43,7 +60,7 @@
         window.location = '/login';
       });
 
-      // now try to get wallets and display them on the page
+      // now get wallets and display them on the page
     jQuery.get({
         url: `/wallets/developer/${myDeveloperId}`,
         headers: {
@@ -51,8 +68,14 @@
         }
       }, function(data) {
       //handle success
+      // setup the table
+      jQuery('#wallet-table').append('<table id="wallet-table__table"></table>');
+      jQuery('#wallet-table__table').append('<tr><th>Created At</th><th>Address</th><th>Associated User ID</th></tr>');
+      // create the new rows for each wallet
+      // for each wallet, fetch the wallet balance from cleargraph and add it to the html
         jQuery.each(data.wallets, function (index, value) {
-          jQuery('#wallet-list__wallets').append(`<li>${data.wallets[index].address}</li>`);
+          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td></tr>`;
+          jQuery('#wallet-table__table').append(tableHtml);
         })
       }).fail(function(xhr, status, error) {
         // handle fail
@@ -85,7 +108,7 @@
           jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address ${data.wallet.address} for the user ${data.wallet.user_id}</p>`);
 
           // add the new wallet to the list
-          jQuery('#wallet-list__wallets').append(`<li>${data.wallet.address}</li>`);
+          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td>${data.wallet.address}</td><td>${data.wallet.user_id}</td></tr>`);
 
         }).fail(function(xhr, status, error) {
         // error handling

@@ -92,7 +92,6 @@ app.post('/wallets', authenticate, (req, res) => {
 // Get an existing Wallet
 app.get('/wallets/:id', authenticate, (req, res) => {
   getWalletById(req.params.id, req.developer._id).then((wallet) => {
-    console.log('Wallet is: ', wallet);
     res.send({wallet});
   }, (err) => {
     if (err = '404') {
@@ -116,10 +115,10 @@ app.get('/wallets/:id/balance', authenticate, (req, res) => {
   getWalletBalance(req.params.id, req.developer._id).then((balance) => {
     res.send({"balance": balance});
   }, (err) => {
-    res.status(400).send();
+    res.status(400).send(err);
   })
   }, (err) => {
-  res.status(400).send();
+  res.status(400).send(err);
 })
 
 // Sign a transaction
