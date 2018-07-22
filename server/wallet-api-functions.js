@@ -2,6 +2,7 @@ var {mongoose} = require('./db/mongoose')
 var {ObjectID} = require('mongodb');
 var {Wallet} = require('./db/models/wallet')
 var {getWalletById} = require('./get-wallet-by-id')
+var _ = require('lodash');
 
 var Web3 = require('web3');
 var web3 = new Web3();
@@ -12,12 +13,10 @@ var createAccountFromKey = (walletId, developerId) => {
 
     // get the wallet id from req
     getWalletById(walletId, developerId).then((wallet) => {
-
       // use web3 to create an account from the private key
-      var account = web3.eth.accounts.privateKeyToAccount(wallet.private_key)
+      var account = web3.eth.accounts.privateKeyToAccount(wallet[0].private_key);
 
       // return the account
-      console.log(account);
       resolve(account);
 
     }, (err) => {
@@ -34,7 +33,6 @@ var signMessage = (walletId, developerId, message) => {
 
     // get the wallet id and ctreate an account (call createAccountFromKey for all of this)
     createAccountFromKey(walletId, developerId).then((account) => {
-
       // use the web3 sign function to sign something
       var signedMessage = account.sign(message, account.privateKey);
 

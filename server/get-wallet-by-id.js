@@ -7,7 +7,7 @@ var getWalletById = (walletId, developerId) => {
     // is it a valid id?
     if (!ObjectID.isValid(walletId)) { reject('400') }
 
-    // find the wallet by id
+    // find the wallet by id and make sure it belongs to the developer
     Wallet.find({
       _id: walletId,
       _developer: developerId
