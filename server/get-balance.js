@@ -1,10 +1,10 @@
 var request = require('request');
 var {getWalletById} = require('./get-wallet-by-id');
 
-var getWalletBalance = (id) => {
+var getWalletBalance = (walletId, developerId) => {
   return new Promise((resolve, reject) => {
 
-    getWalletById(id).then((wallet) => {
+    getWalletById(walletId, developerId).then((wallet) => {
 
       var query = `{ethereumAddress(address: \"${wallet.address}\") {balance { ether }}}`;
 

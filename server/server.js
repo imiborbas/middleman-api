@@ -32,9 +32,10 @@ app.post('/wallets', authenticate, (req, res) => {
 });
 
 // Get an existing Wallet
-app.get('/wallets/:id', (req, res) => {
-  getWalletById(req.params.id).then((wallet) => {
-    res.send({"address": wallet.address});
+app.get('/wallets/:id', authenticate, (req, res) => {
+  getWalletById(req.params.id, req.developer._id).then((wallet) => {
+    console.log('Wallet is: ', wallet);
+    res.send({wallet});
   }, (err) => {
     if (err = '404') {
       return res.status(404).send();
@@ -45,8 +46,8 @@ app.get('/wallets/:id', (req, res) => {
 });
 
 // Check Wallet Balance
-app.get('/wallets/:id/balance', (req, res) => {
-  getWalletBalance(req.params.id).then((balance) => {
+app.get('/wallets/:id/balance', authenticate, (req, res) => {
+  getWalletBalance(req.params.id, req.developer._id).then((balance) => {
     res.send({"balance": balance});
   }, (err) => {
     res.status(400).send();
@@ -57,8 +58,8 @@ app.get('/wallets/:id/balance', (req, res) => {
 
 // Sign a transaction
 // req.body must include transaction to sign
-app.post('/wallets/:id/sign_transaction', (req, res) => {
-    signTransaction(req.params.id, req.body.transaction).then((signedTransaction) => {
+app.post('/wallets/:id/sign_transaction', authenticate, (req, res) => {
+    signTransaction(req.params.id, req.developer._id, req.body.transaction).then((signedTransaction) => {
       res.send({signedTransaction});
     }, (err) => {
       console.log(err);
@@ -71,25 +72,12 @@ app.post('/wallets/:id/sign_transaction', (req, res) => {
 
 // Sign a message
 // req.body must include message to sign
-app.post('/wallets/:id/sign_message', (req, res) => {
-  signMessage(req.params.id, req.body.message).then((message) => {
+app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
+  signMessage(req.params.id, req.developer._id, req.body.message).then((message) => {
     res.send({message});
   }, (err) => {
     res.status(400).send();
   })
-}, (err) => {
-  res.status(400).send();
-})
-
-
-
-// Transfer $ from wallet to somewhere else
-// req.body must include two addr and amount and token type
-app.post('/wallets/:id/transfer', (req, res) => {
-  // check if the user has that amount in balance
-  // check if it is a valid address
-  // transfer amount (req.body.amount) of token_type (req.body.token) to address (req.body.to_addr)
-
 }, (err) => {
   res.status(400).send();
 })

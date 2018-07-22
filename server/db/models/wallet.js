@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 // Wallet Model
-var Wallet = mongoose.model('Wallet', {
+var WalletSchema = new mongoose.Schema({
   _developer: {
     required: true,
     type: mongoose.Schema.Types.ObjectId
@@ -24,6 +24,14 @@ var Wallet = mongoose.model('Wallet', {
     type: String,
     required: false
   }
-});
+})
+var Wallet = mongoose.model('Wallet', WalletSchema);
+
+WalletSchema.methods.toJSON = function() {
+  var wallet = this;
+  var walletObj = wallet.toObject();
+
+  return _.pick(developerObj, ['address', '_id', 'user_id']);
+};
 
 module.exports = {Wallet};

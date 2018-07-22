@@ -7,11 +7,11 @@ var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('https://mainnet.infura.io/v3/9425cb4913f540db83c938c05d31dbb4'));
 
-var createAccountFromKey = (id) => {
+var createAccountFromKey = (walletId, developerId) => {
   return new Promise((resolve, reject) => {
 
     // get the wallet id from req
-    getWalletById(id).then((wallet) => {
+    getWalletById(walletId, developerId).then((wallet) => {
 
       // use web3 to create an account from the private key
       var account = web3.eth.accounts.privateKeyToAccount(wallet.private_key)
@@ -29,11 +29,11 @@ var createAccountFromKey = (id) => {
   })
 }
 
-var signMessage = (id, message) => {
+var signMessage = (walletId, developerId, message) => {
   return new Promise((resolve, reject) => {
 
     // get the wallet id and ctreate an account (call createAccountFromKey for all of this)
-    createAccountFromKey(id).then((account) => {
+    createAccountFromKey(walletId, developerId).then((account) => {
 
       // use the web3 sign function to sign something
       var signedMessage = account.sign(message, account.privateKey);
@@ -50,10 +50,10 @@ var signMessage = (id, message) => {
   })
 }
 
-var signTransaction = (id, transaction) => {
+var signTransaction = (walletId, developerId, transaction) => {
   return new Promise((resolve, reject) => {
     // get the wallet id and create a temp account
-    createAccountFromKey(id).then((account) => {
+    createAccountFromKey(walletId, developerId).then((account) => {
 
       // use the web3 sign function to sign something
       var signedTransaction = account.signTransaction(transaction, account.privateKey);
