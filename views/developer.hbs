@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>{{> head}}</head>
+  <head>
+    <!-- {{> head}} -->
+  </head>
   <body>
-    {{> header}}
+    <!-- {{> header}} -->
     <div id='demo'>
       <div id='create-wallet'>
         <form id="create-wallet__form">
@@ -26,19 +28,22 @@
       };
 
       // get balance from cleargraph
-      var getWalletBalance = (walletId) => {
+      var getWalletBalance = (walletId, callback) => {
+        var walletBalance;
         jQuery.get({
           url: `/wallets/${walletId}/balance`,
           headers: {
             'x-auth-key': document.cookie
           }
         }, function(data) {
-            console.log(data);
-            return data;
-          })
+            walletBalance =  JSON.parse(JSON.stringify(data)).balance;
+            //TODO I don't know why this doesn;t work
+            console.log('Inside the inner function ', walletBalance);
+            return walletBalance;
+          });
+          console.log('Outside the inner function ', walletBalance);
+          return walletBalance;
         };
-
-        getWalletBalance('5b54fd0b14d5ce92608d8903');
 
       // if no cookie, redirect to Login
       if (document.cookie == '') { window.location = '/login'; }
@@ -70,11 +75,13 @@
       //handle success
       // setup the table
       jQuery('#wallet-table').append('<table id="wallet-table__table"></table>');
-      jQuery('#wallet-table__table').append('<tr><th>Created At</th><th>Address</th><th>Associated User ID</th></tr>');
+      jQuery('#wallet-table__table').append('<tr><th>Created At</th><th>Address</th><th>Associated User ID</th><th>Balance</th></tr>');
       // create the new rows for each wallet
       // for each wallet, fetch the wallet balance from cleargraph and add it to the html
         jQuery.each(data.wallets, function (index, value) {
-          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td></tr>`;
+          var id = data.wallets[index]._id;
+          var balance = getWalletBalance(id);
+          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td><td>${balance} ETH</td></tr>`;
           jQuery('#wallet-table__table').append(tableHtml);
         })
       }).fail(function(xhr, status, error) {
@@ -108,6 +115,7 @@
           jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address ${data.wallet.address} for the user ${data.wallet.user_id}</p>`);
 
           // add the new wallet to the list
+          // TODO fetch balance for it
           jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td>${data.wallet.address}</td><td>${data.wallet.user_id}</td></tr>`);
 
         }).fail(function(xhr, status, error) {

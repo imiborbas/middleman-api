@@ -113,7 +113,7 @@ app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
 // Check Wallet Balance
 app.get('/wallets/:id/balance', authenticate, (req, res) => {
   getWalletBalance(req.params.id, req.developer._id).then((balance) => {
-    res.send({"balance": balance});
+    res.send({balance});
   }, (err) => {
     res.status(400).send(err);
   })
