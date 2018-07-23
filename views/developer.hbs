@@ -72,6 +72,17 @@
         let html = wallets.map(generateHTML).join('')
         table.innerHTML += html
 
+        let walletAddresses = document.getElementsByClassName('wallet-address')
+
+        let walletDemoHtml = `{{> signing-demo.hbs}}`
+
+        // TODO: if you click on a wallet, we append to the #demo block some signing functions for you to try out
+        // TODO: make it so that if you hover on a wallet, it looks clickable
+        jQuery('.wallet-address').on('click', function(e) {
+          console.log('clicked!');
+        })
+
+
       }()
 
       // get all the wallets that are attached to the logged in developer
@@ -103,7 +114,7 @@
         return new Date(parseInt(walletId.substring(0, 8), 16) * 1000).toLocaleDateString('en-UK');
       };
 
-    //   when submit the form, generate a wallet for the user id
+    //   when submit the generate wallet form, generate a wallet for the user id
       jQuery('#create-wallet__form').on('submit', function(e) {
         e.preventDefault();
 
