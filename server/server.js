@@ -59,18 +59,11 @@ app.get('/account', (req, res) => {
   // render an account settings page
 })
 
-// i need to send auth headers somehow
-app.get('developers/wallet/:id', authenticate, (req, res) => {
-  // get Wallet by Id
-  getWalletById(req.params.id, req.developer._id).then((wallet) => {
-    res.render('wallet-api.hbs', {
-      wallet,
-      pageTitle: 'Kelp Developer Portal'
-    });
-  }).catch((e) => {
-    res.send(400);
-  })
-})
+app.get('/wallet-demo', (req, res) => {
+  res.render('wallet-api.hbs', {
+    pageTitle: 'Kelp Developer Portal'
+  });
+});
 
 // API
 
