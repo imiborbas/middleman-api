@@ -21,92 +21,89 @@
       </div>
     </div>
     <div id="wallet-creation-success-message"></div>
-    <div id="wallet-table"></div>
+    <div id="wallet-table"><table class="pure-table" id="wallet-table__table"></table></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
-      var myDeveloperId;
-      var myEmail;
+      // helper for generating table rows for wallets
+      function generateHTML(wallet) {
+        return `<tr><td>${createdAt(wallet._id)}</td><td><span class="wallet-address preformatted">${wallet.address}</span></td><td>${wallet.user_id}</td><td>${wallet.balance} ETH</td></tr>`
+      }
 
-      // Wallet id to createdAt date
+      // auth function that redirects user to login if not authed and otherwise returns dev info
+      async function auth() {
+        //  if no cookie, redirect to Login
+        if (document.cookie === '') { window.location = '/login'; }
+
+        // otherwise get id
+        let developerId = await fetch('/developers/me', {
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }).catch((e) => {
+          // error authenticating, redirect the user to login
+          window.location = '/login';
+        })
+          return developerId.json()
+      }
+
+      //main
+      void async function() {
+        //first auth the user. devId is at account._id, email is at account.email
+        let {account} = await auth();
+
+        // display the user's email in the top corner
+        // TODO: later on this should be a link to the account section
+        jQuery('header').append(`<p id="my-email"><a href="#">${account.email}</a></p>`);
+
+        // create the table
+        // TODO: Later on this should only be created if there are wallets to display
+        jQuery('#wallet-table__table').append('<thead><tr><th>Created</th><th>Address</th><th>UserID</th><th>Balance</th></tr></thead>');
+
+
+        // need to pass in dev id
+        let {wallets} = await getWallets(account._id)
+
+        await Promise.all(wallets.map(async wallet => {
+          wallet.balance = await getWalletBalance(wallet._id)
+        }))
+
+        let table = document.getElementById('wallet-table__table')
+        let html = wallets.map(generateHTML).join('')
+        table.innerHTML += html
+
+      }()
+
+      // get all the wallets that are attached to the logged in developer
+      async function getWallets(myDeveloperId) {
+        let res = await fetch(`/wallets/developer/${myDeveloperId}`, {
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        })
+
+        return res.json()
+      }
+
+      // get wallet balance for a wallet
+      async function getWalletBalance(walletId) {
+        let res = await fetch(`/wallets/${walletId}/balance`, {
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        })
+
+        let {balance} = await res.json()
+
+        return balance
+      }
+
+      // Helper function to get the wallet created date from its id
       var createdAt = (walletId) => {
         return new Date(parseInt(walletId.substring(0, 8), 16) * 1000).toLocaleDateString('en-UK');
       };
 
-      // get balance from cleargraph
-      var getWalletBalance = (walletId) => {
-
-        var walletBalance;
-        jQuery.get({
-          url: `/wallets/${walletId}/balance`,
-          headers: {
-            'x-auth-key': document.cookie
-          },
-          success: function(data) {
-            walletBalance =  JSON.parse(JSON.stringify(data)).balance;
-            //TODO I don't know why this doesnt work
-            console.log('Inside the inner function ', walletBalance);
-            return walletBalance;
-          }
-        }).fail(function(xhr, status, error) {
-            // handle fail
-            console.log('err: ', error);
-          });
-          console.log('Outside the inner function ', walletBalance);
-          return walletBalance;
-        };
-
-      // if no cookie, redirect to Login
-      if (document.cookie === '') { window.location = '/login'; }
-
-      // make a request to the api using cookie as auth header
-      jQuery.get({
-        url: '/developers/me',
-        headers: {
-          'x-auth-key': document.cookie
-        }
-      }, function(data) {
-        //handle success
-        myEmail = data.account.email;
-        jQuery('header').append(`<p id="my-email"><a href="#">${myEmail}</a></p>`);
-
-        console.log('email: ', myEmail);
-
-        myDeveloperId = data.account._id;
-      }).fail(function(xhr, status, error) {
-        // handle fail
-        console.log('error: ', error);
-        // if bad auth (401) redirect to Login
-        window.location = '/login';
-      });
-
-      // now get wallets and display them on the page
-    jQuery.get({
-        url: `/wallets/developer/${myDeveloperId}`,
-        headers: {
-          'x-auth-key': document.cookie
-        }
-      }, function(data) {
-      //handle success
-      // setup the table
-      jQuery('#wallet-table').append('<table class="pure-table" id="wallet-table__table"></table>');
-      jQuery('#wallet-table__table').append('<thead><tr><th>Created</th><th>Address</th><th>UserID</th><th>Balance</th></tr></thead>');
-      // create the new rows for each wallet
-      // for each wallet, fetch the wallet balance from cleargraph and add it to the html
-        jQuery.each(data.wallets, function (index, value) {
-          var id = data.wallets[index]._id;
-          var balance = getWalletBalance(id);
-          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td><span class="wallet-address preformatted">${data.wallets[index].address}</span></td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
-          jQuery('#wallet-table__table').append(tableHtml);
-        })
-      }).fail(function(xhr, status, error) {
-        // handle fail
-        console.log('error: ', error);
-        // if bad auth (401) redirect to Login
-        window.location = '/login';
-      });
-
-      // when submit the form, generate a wallet for the user id
+    //   when submit the form, generate a wallet for the user id
       jQuery('#create-wallet__form').on('submit', function(e) {
         e.preventDefault();
 
