@@ -6,7 +6,6 @@
     {{> emailPwForm}}
     <p><a href='/login'>Login Instead</a></p>
 
-    {{> footer}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
       //on 2 args: name of event, function to call
@@ -43,7 +42,7 @@
         // error handling
           jQuery('[name=email]').val("");
           jQuery('[name=password]').val("");
-          jQuery('#emailPwForm').append('<div id="invalid-signup-message">Invalid creds, but you can try again.</div>');
+          jQuery('#emailPwForm').append('<div id="invalid-signup-message">🤷🏽‍♀️Invalid creds, but you can try again.</div>');
         });
       })
     </script>

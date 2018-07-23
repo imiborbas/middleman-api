@@ -13,7 +13,7 @@
       <h3>Try It Out First</h3>
       <div id='create-wallet'>
         <p>Try out the form below to generate a wallet on behalf of a user. Type in an email address or user identifier and press submit.</p>
-        <form class="pure-form" id="create-wallet__form">
+        <form class="pure-form" id="create-wallet__form" autocomplete="off">
           <label>User ID or Email:</label><br>
           <input name="userid" type="text" placeholder="mayor@dani.town" autofocus />
           <button class="pure-button" type="submit">Create A Wallet</button>
@@ -126,7 +126,7 @@
 
           // add the new wallet to the list
           // TODO fetch balance for it
-          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td>${data.wallet.address}</td><td>${data.wallet.user_id}</td></tr>`);
+          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td>${data.wallet.address}</td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
 
         }).fail(function(xhr, status, error) {
         // error handling
