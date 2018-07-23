@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- {{> head}} -->
+    {{> head}}
   </head>
   <body>
-    <!-- {{> header}} -->
+    {{> header}}
+    <div id="product-description">
+      <p>Kelp lets you spin up cloud-hosted wallets so that your users can use your dapps without a web3-enabled browser. To get started, <a href="https://docs.kelp.cloud">check out the docs</a> or try it out manually below.</p>
+      <a href="http://docs.kelp.cloud"><button class="pure-button">Check Out The API</button></a>
+    </div>
     <div id='demo'>
+      <h3>Try It Out First</h3>
       <div id='create-wallet'>
-        <form id="create-wallet__form">
-          <label>User ID or Email This Wallet Belongs To:</label>
+        <p>Try out the form below to generate a wallet on behalf of a user. Type in an email address or user identifier and press submit.</p>
+        <form class="pure-form" id="create-wallet__form">
+          <label>User ID or Email:</label><br>
           <input name="userid" type="text" placeholder="mayor@dani.town" autofocus />
-          <button type="submit">Create A Wallet</button>
+          <button class="pure-button" type="submit">Create A Wallet</button>
         </form>
       </div>
     </div>
     <div id="wallet-creation-success-message"></div>
     <div id="wallet-table"></div>
-    {{> footer}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
@@ -24,22 +29,27 @@
 
       // Wallet id to createdAt date
       var createdAt = (walletId) => {
-        return new Date(parseInt(walletId.substring(0, 8), 16) * 1000);
+        return new Date(parseInt(walletId.substring(0, 8), 16) * 1000).toLocaleDateString('en-UK');
       };
 
       // get balance from cleargraph
-      var getWalletBalance = (walletId, callback) => {
+      var getWalletBalance = (walletId) => {
+
         var walletBalance;
         jQuery.get({
           url: `/wallets/${walletId}/balance`,
           headers: {
             'x-auth-key': document.cookie
-          }
-        }, function(data) {
+          },
+          success: function(data) {
             walletBalance =  JSON.parse(JSON.stringify(data)).balance;
-            //TODO I don't know why this doesn;t work
+            //TODO I don't know why this doesnt work
             console.log('Inside the inner function ', walletBalance);
             return walletBalance;
+          }
+        }).fail(function(xhr, status, error) {
+            // handle fail
+            console.log('err: ', error);
           });
           console.log('Outside the inner function ', walletBalance);
           return walletBalance;
@@ -74,14 +84,14 @@
       }, function(data) {
       //handle success
       // setup the table
-      jQuery('#wallet-table').append('<table id="wallet-table__table"></table>');
-      jQuery('#wallet-table__table').append('<tr><th>Created At</th><th>Address</th><th>Associated User ID</th><th>Balance</th></tr>');
+      jQuery('#wallet-table').append('<table class="pure-table" id="wallet-table__table"></table>');
+      jQuery('#wallet-table__table').append('<thead><tr><th>Created</th><th>Address</th><th>UserID</th><th>Balance</th></tr></thead>');
       // create the new rows for each wallet
       // for each wallet, fetch the wallet balance from cleargraph and add it to the html
         jQuery.each(data.wallets, function (index, value) {
           var id = data.wallets[index]._id;
           var balance = getWalletBalance(id);
-          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td><td>${balance} ETH</td></tr>`;
+          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
           jQuery('#wallet-table__table').append(tableHtml);
         })
       }).fail(function(xhr, status, error) {
