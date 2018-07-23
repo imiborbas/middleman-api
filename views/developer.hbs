@@ -91,7 +91,7 @@
         jQuery.each(data.wallets, function (index, value) {
           var id = data.wallets[index]._id;
           var balance = getWalletBalance(id);
-          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td>${data.wallets[index].address}</td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
+          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td><span class="preformatted">${data.wallets[index].address}</span></td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
           jQuery('#wallet-table__table').append(tableHtml);
         })
       }).fail(function(xhr, status, error) {
@@ -122,17 +122,17 @@
           // clear form field
           jQuery('[name=userid]').val("");
 
-          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address ${data.wallet.address} for the user ${data.wallet.user_id}</p>`);
+          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address <span class="preformatted">${data.wallet.address}</span> for the user ${data.wallet.user_id}</p>`);
 
           // add the new wallet to the list
           // TODO fetch balance for it
-          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td>${data.wallet.address}</td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
 
         }).fail(function(xhr, status, error) {
         // error handling
           console.log(error);
           jQuery('[name=userid]').val("");
-          jQuery('body').append('<div> Something went wrong.</div>');
+          jQuery('body').append('<div class="error"> Something went horribly, horribly wrong.</div>');
         });
       })
 
