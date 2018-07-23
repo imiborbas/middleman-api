@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>{{head}}</head>
+
+<body>
+  {{> header}}
+  <div id="product-description">
+    <p>Kelp lets you spin up cloud-hosted wallets so that your users can use your dapps without a web3-enabled browser. To get started, <a href="https://docs.kelp.cloud">check out the docs</a> or try it out manually below.</p>
+    <a href="http://docs.kelp.cloud"><button class="pure-button">Check Out The API</button></a>
+  </div>
+  <div id='signing-demo'>
+    <h3>Sign A Message</h3>
+    <div id='signing-demo__container'>
+      <p>Try out the form below to generate a wallet on behalf of a user. Type in an email address or user identifier and press submit.</p>
+      <form class="pure-form" id="signing-demo__form" autocomplete="off">
+        <label>Message To Sign:</label><br>
+        <input name="message" type="text" placeholder="super legit message" autofocus />
+        <button class="pure-button" type="submit">Sign It</button>
+      </form>
+    </div>
+  </div>
+  <div id="wallet-creation-success-message"></div>
+</body>
+
+</html>

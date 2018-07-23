@@ -33,21 +33,6 @@ hbs.registerHelper('getCurrentYear', () => {
 
 // Views
 
-// delete this one
-app.get('/', (req, res) => {
-  res.render('home.hbs', {
-    pageTitle: 'Home Page',
-    welcomeMessage: 'welcome!'
-  })
-})
-
-// delete this one
-app.get('/about', (req, res) => {
-  res.render('about.hbs', {
-    pageTitle: 'About Page'
-  });
-})
-
 app.get('/login', (req, res) => {
   // render a login page
   res.render('login.hbs', {
@@ -74,8 +59,17 @@ app.get('/account', (req, res) => {
   // render an account settings page
 })
 
-app.get('developers/gui', (req, res) => {
-  // render a gui for trying out the api
+// i need to send auth headers somehow
+app.get('developers/wallet/:id', authenticate, (req, res) => {
+  // get Wallet by Id
+  getWalletById(req.params.id, req.developer._id).then((wallet) => {
+    res.render('wallet-api.hbs', {
+      wallet,
+      pageTitle: 'Kelp Developer Portal'
+    });
+  }).catch((e) => {
+    res.send(400);
+  })
 })
 
 // API

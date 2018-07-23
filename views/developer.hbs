@@ -26,6 +26,7 @@
     <script>
 
       var myDeveloperId;
+      var myEmail;
 
       // Wallet id to createdAt date
       var createdAt = (walletId) => {
@@ -55,8 +56,22 @@
           return walletBalance;
         };
 
+        var goToWalletPage = (wallet) => {
+          // make a request to get /developers/wallet/:id
+          // and pass in cookie to auth headers
+          //then window.location change
+
+          jQuery.get({
+            url: `/developers/wallet/${wallet._id}`,
+            headers: { 'x-auth-key': document.cookie },
+            success: function(data) { window.location = `/developers/wallet/${wallet._id}`; }
+          }).fail(function(xhr, status, error) {
+            console.log(error);
+          })
+        }
+
       // if no cookie, redirect to Login
-      if (document.cookie == '') { window.location = '/login'; }
+      if (document.cookie === '') { window.location = '/login'; }
 
       // make a request to the api using cookie as auth header
       jQuery.get({
@@ -66,6 +81,10 @@
         }
       }, function(data) {
         //handle success
+        myEmail = data.account.email;
+        jQuery('header').append(`<p id="my-email"><a href="#">${myEmail}</a></p>`);
+
+        console.log('email: ', myEmail);
 
         myDeveloperId = data.account._id;
       }).fail(function(xhr, status, error) {
@@ -91,7 +110,7 @@
         jQuery.each(data.wallets, function (index, value) {
           var id = data.wallets[index]._id;
           var balance = getWalletBalance(id);
-          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td><span class="preformatted">${data.wallets[index].address}</span></td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
+          var tableHtml = `<tr><td>${createdAt(data.wallets[index]._id)}</td><td><span class="wallet-address preformatted">${data.wallets[index].address}</span></td><td>${data.wallets[index].user_id}</td><td>0 ETH</td></tr>`;
           jQuery('#wallet-table__table').append(tableHtml);
         })
       }).fail(function(xhr, status, error) {
@@ -122,11 +141,11 @@
           // clear form field
           jQuery('[name=userid]').val("");
 
-          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address <span class="preformatted">${data.wallet.address}</span> for the user ${data.wallet.user_id}</p>`);
+          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span> for the user ${data.wallet.user_id}</p>`);
 
           // add the new wallet to the list
           // TODO fetch balance for it
-          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
 
         }).fail(function(xhr, status, error) {
         // error handling
@@ -135,6 +154,12 @@
           jQuery('body').append('<div class="error"> Something went horribly, horribly wrong.</div>');
         });
       })
+
+      jQuery('.wallet-address').on('click', function() {
+        //TODO this doens't fire on click it is super weird
+         //need to somehow get the wallet obj and pass it in to goToWalletPage()
+         console.log('i hear you');
+      });
 
     </script>
   </body>
