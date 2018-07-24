@@ -40,7 +40,6 @@ var getWalletIdByAddr = (walletAddr, developerId) => {
   return new Promise((resolve, reject) => {
 
     // find the wallet by id and make sure it belongs to the developer
-    console.log('[getWalletIdByAddr] the walletAddr passed in is: ', walletAddr);
     Wallet.findOne({
       address: walletAddr,
       _developer: developerId

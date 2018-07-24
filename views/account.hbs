@@ -36,7 +36,7 @@
       let {account} = await auth();
 
       // display the user's email in the top corner
-      jQuery('header').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
+      jQuery('#banner').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
 
       // display email and authkey on the page
       jQuery('.centered-form').append(`<h4>✉️ Your Email:</h4><span class="preformatted" style="background-color: white;">${account.email}</span><h4>🔑 Your API Token:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${document.cookie}</span>`);

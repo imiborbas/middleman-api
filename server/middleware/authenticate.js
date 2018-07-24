@@ -2,7 +2,6 @@ var {Developer} = require('./../db/models/developer');
 
 var authenticate = (req, res, next) => {
   var authToken = req.header('x-auth-key');
-  console.log('in authenticate middleware, req.header is: ', req.header('x-auth-key'));
 
   Developer.findByAuthToken(authToken).then((developer) => {
     if (!developer) {
@@ -12,7 +11,6 @@ var authenticate = (req, res, next) => {
     }
     req.developer = developer;
     req.authToken = authToken;
-    console.log('authed: ', req.developer);
     next();
   }).catch((err) => {
     console.log('auth token not valid: ', authToken);

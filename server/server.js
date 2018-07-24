@@ -15,6 +15,7 @@ const {getWalletByDeveloper} = require('./get-wallet-by-id');
 const {signMessage} = require('./wallet-api-functions');
 const {signMessageByAddr} = require('./wallet-api-functions');
 const {signTransaction} = require('./wallet-api-functions');
+const {signTransactionByAddr} = require('./wallet-api-functions');
 const {getWalletBalance} = require('./get-balance');
 const {authenticate} = require('./middleware/authenticate');
 
@@ -116,6 +117,18 @@ app.get('/wallets/:id/balance', authenticate, (req, res) => {
 // req.body must include transaction to sign
 app.post('/wallets/:id/sign_transaction', authenticate, (req, res) => {
     signTransaction(req.params.id, req.developer._id, req.body.transaction).then((signedTransaction) => {
+      res.send({signedTransaction});
+    }, (err) => {
+      console.log(err);
+      res.status(400).send();
+    })
+  }, (err) => {
+    console.log(err);
+    res.status(400).send();
+})
+
+app.post('/wallets/address/:addr/sign_transaction', authenticate, (req, res) => {
+    signTransactionByAddr(req.params.addr, req.developer._id, req.body.transaction).then((signedTransaction) => {
       res.send({signedTransaction});
     }, (err) => {
       console.log(err);

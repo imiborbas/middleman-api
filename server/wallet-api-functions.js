@@ -90,8 +90,32 @@ var signTransaction = (walletId, developerId, transaction) => {
   })
 }
 
+var signTransactionByAddr = (walletAddr, developerId, transaction) => {
+  return new Promise((resolve, reject) => {
+    getWalletIdByAddr(walletAddr, developerId).then((walletId) => {
+      console.log(`[signTransactionByAddr] walletId is ${walletId}`);
+    // get the wallet id and create a temp account
+    createAccountFromKey(walletId, developerId).then((account) => {
+      console.log(`[signTransactionByAddr] account is ${account}`);
+
+      // use the web3 sign function to sign something
+      var signedTransaction = account.signTransaction(transaction, account.privateKey);
+
+      // return signed string
+      resolve(signedTransaction);
+
+    }, (err) => {
+      reject(err);
+    })
+  })
+  }, (err) => {
+    reject(err);
+  })
+}
+
 module.exports = {
   signMessage,
   signMessageByAddr,
-  signTransaction
+  signTransaction,
+  signTransactionByAddr
 };

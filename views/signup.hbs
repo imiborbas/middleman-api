@@ -17,8 +17,6 @@
         var email = jQuery('[name=email]').val();
         var pw = jQuery('[name=password]').val();
 
-        console.log(email, pw);
-
         // send the data to the signup api
         jQuery.post('/developers/signup', {
           "email": email,
