@@ -13,6 +13,7 @@ const {createWallet} = require('./create-wallet');
 const {getWalletById} = require('./get-wallet-by-id');
 const {getWalletByDeveloper} = require('./get-wallet-by-id');
 const {signMessage} = require('./wallet-api-functions');
+const {signMessageByAddr} = require('./wallet-api-functions');
 const {signTransaction} = require('./wallet-api-functions');
 const {getWalletBalance} = require('./get-balance');
 const {authenticate} = require('./middleware/authenticate');
@@ -126,6 +127,17 @@ app.post('/wallets/:id/sign_transaction', authenticate, (req, res) => {
 // req.body must include message to sign
 app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
   signMessage(req.params.id, req.developer._id, req.body.message).then((message) => {
+    res.send({message});
+  }, (err) => {
+    res.status(400).send();
+  })
+}, (err) => {
+  res.status(400).send();
+})
+
+// Sign a message by wallet address
+app.post('/wallets/address/:addr/sign_message', authenticate, (req, res) => {
+  signMessageByAddr(req.params.addr, req.developer._id, req.body.message).then((message) => {
     res.send({message});
   }, (err) => {
     res.status(400).send();

@@ -2,6 +2,7 @@ var {mongoose} = require('./db/mongoose')
 var {ObjectID} = require('mongodb');
 var {Wallet} = require('./db/models/wallet')
 var {getWalletById} = require('./get-wallet-by-id')
+var {getWalletIdByAddr} = require('./get-wallet-by-id')
 var _ = require('lodash');
 
 var Web3 = require('web3');
@@ -48,6 +49,28 @@ var signMessage = (walletId, developerId, message) => {
   })
 }
 
+var signMessageByAddr = (walletAddr, developerId, message) => {
+  return new Promise((resolve, reject) => {
+
+    getWalletIdByAddr(walletAddr, developerId).then((walletId) => {
+      // get the wallet id and ctreate an account (call createAccountFromKey for all of this)
+      createAccountFromKey(walletId, developerId).then((account) => {
+        // use the web3 sign function to sign something
+        var signedMessage = account.sign(message, account.privateKey);
+
+        // return signed string
+        resolve(signedMessage);
+
+      }, (err) => {
+        reject(err);
+      })
+
+    });
+  }, (err) => {
+    reject(err);
+  })
+}
+
 var signTransaction = (walletId, developerId, transaction) => {
   return new Promise((resolve, reject) => {
     // get the wallet id and create a temp account
@@ -69,5 +92,6 @@ var signTransaction = (walletId, developerId, transaction) => {
 
 module.exports = {
   signMessage,
+  signMessageByAddr,
   signTransaction
 };

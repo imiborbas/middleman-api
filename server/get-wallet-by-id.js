@@ -36,7 +36,29 @@ var getWalletByDeveloper = (developerId) => {
   })
 }
 
+var getWalletIdByAddr = (walletAddr, developerId) => {
+  return new Promise((resolve, reject) => {
+
+    // find the wallet by id and make sure it belongs to the developer
+    console.log('[getWalletIdByAddr] the walletAddr passed in is: ', walletAddr);
+    Wallet.findOne({
+      address: walletAddr,
+      _developer: developerId
+    }).then((wallet) => {
+      // was a wallet actually found
+      if (!wallet) { console.log('no wallet with that address'); reject('404') }
+
+      // otherwise return the wallet id
+      resolve(wallet._id);
+    }, (err) => {
+      console.log('[getWalletById] err: ', err);
+      reject(err);
+    })
+  })
+};
+
 module.exports = {
   getWalletById,
-  getWalletByDeveloper
+  getWalletByDeveloper,
+  getWalletIdByAddr
 };

@@ -100,39 +100,29 @@
             // TODO need get wallet by address and then ability to sign based on that.
             // TODO or can make it - if not valid id, then try to get wallet by address
 
-            // display signed message on the screen
-          })
+            jQuery.post({
+              url: //sign whatever ,
+              type: 'post',
+              data: {
+                // message = messageToSign
+              },
+              headers: {
+                'x-auth-key': document.cookie
+              }
+            }, function(data, status) {
+              // clear form field
+              jQuery('[name=message]').val("");
 
-          //     // get userid
-          //     var userid = jQuery('[name=userid]').val();
-          //
-          //     // send the data to the create wallet api
-          //     jQuery.post({
-          //       url: '/wallets/',
-          //       type: 'post',
-          //       data: {
-          //         "user_id": userid
-          //       },
-          //       headers: {
-          //         'x-auth-key': document.cookie
-          //       }
-          //     }, function(data, status) {
-          //       // clear form field
-          //       jQuery('[name=userid]').val("");
-          //
-          //       jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span> for the user ${data.wallet.user_id}</p>`);
-          //
-          //       // add the new wallet to the list
-          //       // TODO fetch balance for it
-          //       jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
-          //
-          //     }).fail(function(xhr, status, error) {
-          //     // error handling
-          //       console.log(error);
-          //       jQuery('[name=userid]').val("");
-          //       jQuery('body').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-          //     });
-          //   })
+              // display success banner with signed message
+              jQuery('#signing-message-success-message').html(`<p>Success!</p>`);
+            }
+          }).fail(function(xhr, status, error) {
+            // handle fail case
+            console.log(error);
+            jQuery('[name=message]').val("");
+            jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+          })
+        })
 
           // handle if someone tries to sign a transaction
         })
