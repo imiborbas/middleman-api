@@ -55,7 +55,7 @@
 
         // display the user's email in the top corner
         // TODO: later on this should be a link to the account section
-        jQuery('header').append(`<p id="my-email"><a href="#">${account.email}</a></p>`);
+        jQuery('header').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
 
         // create the table
         // TODO: Later on this should only be created if there are wallets to display
@@ -77,7 +77,6 @@
 
         // if you click on a wallet, we append to the #demo block some signing functions for you to try out
         jQuery('.wallet-address').on('click', function(e) {
-          console.log('clicked!');
           document.getElementById('create-wallet').className = 'border-bottom';
           document.getElementsByClassName('wallet-demo')[0].innerHTML = signingHtml;
 
@@ -89,7 +88,6 @@
 
           jQuery('#signing-demo__form').on('submit', function(e) {
             e.preventDefault();
-            console.log('submitted!');
 
             // get message to sign
             //don't need to get wallet address because already have it in currentWalletAddr
@@ -114,7 +112,12 @@
               jQuery('[name=message]').val("");
 
               // display success banner with signed message
-              jQuery('#signing-message-success-message').html(`<p>Success! Message signature: ${JSON.stringify(data)}</p>`);
+              // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
+              let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
+
+              let signedMessageTable = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
+
+              jQuery('#signing-message-success-message').html(signedMessageTable);
             }).fail(function(xhr, status, error) {
             // handle fail case
             console.log(error);

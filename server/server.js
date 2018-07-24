@@ -58,6 +58,9 @@ app.get('/developers', (req, res) => {
 
 app.get('/account', (req, res) => {
   // render an account settings page
+  res.render('account.hbs', {
+    pageTitle: 'Kelp | Account Settings'
+  })
 })
 
 app.get('/wallet-demo', (req, res) => {
