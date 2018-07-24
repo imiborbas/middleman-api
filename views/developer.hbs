@@ -101,10 +101,10 @@
             // TODO or can make it - if not valid id, then try to get wallet by address
 
             jQuery.post({
-              url: //sign whatever ,
+              url: `/wallets/address/${currentWalletAddr}/sign_message` ,
               type: 'post',
               data: {
-                // message = messageToSign
+                message: messageToSign
               },
               headers: {
                 'x-auth-key': document.cookie
@@ -114,9 +114,8 @@
               jQuery('[name=message]').val("");
 
               // display success banner with signed message
-              jQuery('#signing-message-success-message').html(`<p>Success!</p>`);
-            }
-          }).fail(function(xhr, status, error) {
+              jQuery('#signing-message-success-message').html(`<p>Success! Message signature: ${JSON.stringify(data)}</p>`);
+            }).fail(function(xhr, status, error) {
             // handle fail case
             console.log(error);
             jQuery('[name=message]').val("");
