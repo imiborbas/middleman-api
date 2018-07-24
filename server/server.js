@@ -38,14 +38,14 @@ hbs.registerHelper('getCurrentYear', () => {
 app.get('/login', (req, res) => {
   // render a login page
   res.render('login.hbs', {
-    pageTitle: 'Login | Kelp'
+    pageTitle: 'Login'
   })
 })
 
 app.get('/signup', (req, res) => {
   // render a signup page
   res.render('signup.hbs', {
-    pageTitle: 'Join | Kelp'
+    pageTitle: 'Sign Up'
   })
 })
 
@@ -189,9 +189,7 @@ app.post('/developers/login', (req, res) => {
 
   Developer.findByCredentials(body.email, body.password).then((developer) => {
     // generate a new token and send it back
-    return developer.generateAuthToken().then((authToken) => {
-      res.header('x-auth-key', authToken).send({developer});
-    });
+    res.header('x-auth-key', developer.authToken).send({developer});
   }).catch((err) => {
     res.status(400).send(err);
   });

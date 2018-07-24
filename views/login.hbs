@@ -5,8 +5,43 @@
     {{> header}}
     {{> emailPwForm}}
     <p><a href='/signup'>Signup Instead</a></p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      //on 2 args: name of event, function to call
+      // e is event obj
+      jQuery('#emailPwForm').on('submit', function(e) {
+        e.preventDefault();
 
-    {{> footer}}
-    {{> loadJS}}
+        // get email and pw values
+        var email = jQuery('[name=email]').val();
+        var pw = jQuery('[name=password]').val();
+
+        // send the data to the signup api
+        jQuery.post('/developers/login', {
+          "email": email,
+          "password": pw
+        }, function(data, status) {
+          // clear form field
+          jQuery('[name=email]').val("");
+          jQuery('[name=password]').val("");
+
+          // set cookie and then will need to check the cookie to load /developers
+          // in /developers call the api and send whatever is in doc.cookie as auth header
+          // if 400/401, redirect the user to /login
+          var authToken = data.developer.authToken;
+
+          document.cookie = authToken;
+
+          //redirect the user to the developer page
+          window.location = '/developers';
+
+        }).fail(function(xhr, status, error) {
+        // error handling
+          jQuery('[name=email]').val("");
+          jQuery('[name=password]').val("");
+          jQuery('#emailPwForm').append('<div class="error" id="invalid-signup-message">🤷🏽‍♀️Invalid creds, but you can try again.</div>');
+        });
+      })
+    </script>
   </body>
 </html>
