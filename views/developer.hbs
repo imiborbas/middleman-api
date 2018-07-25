@@ -93,10 +93,10 @@
 
           // create a table
           let table = jQuery('.wallet-table').append('<table id="wallet-table__table"></table>');
-          table.append('<thead><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
+          table.append('<thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
           let html = wallets.map(generateTableHTML).join('')
           table.append(html);
-          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
         }
 
         // let walletAddresses = document.getElementsByClassName('wallet-address')
@@ -264,13 +264,13 @@
             // this is the first wallet, create the whole table
             console.log('first wallet');
             let table = jQuery('.wallet-table').append('<table id="wallet-table__table"></table>');
-            table.append('<thead><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
+            table.append('<thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
             table.append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
-            table.append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+            table.append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
 
           } else {
             console.log('not first wallet');
-            jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+            jQuery('#wallet-table__table__thead').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
           }
 
         }).fail(function(xhr, status, error) {
