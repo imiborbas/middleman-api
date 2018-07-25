@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    {{> head}}
-  </head>
+<head>
+  {{> head}}
+</head>
   <body>
-    {{> header}}
-    <div id="product-description">
-      <p>Kelp lets you spin up cloud-hosted wallets so that your users can use your dapps without a web3-enabled browser. To get started, <a href="https://docs.kelp.cloud">check out the docs</a> or try it out manually below.</p>
-      <a href="http://docs.kelp.cloud"><button class="pure-button">Check Out The API</button></a>
+    <div class="nav-bar">
+      <img class="logo" src="https://kelp.nyc3.digitaloceanspaces.com/logo.svg"><span class="hidden-xs"><h3>Kelp</h3></span>
+      <ul>
+        <li id="nav-bar__wallets"><a href="#"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
+        <li id="nav-bar__docs"><a href="#"><i class="material-icons">description</i><span class="hidden-xs navbar-text"> Docs</span></a></li>
+        <li id="nav-bar__account"><a href="#"><i class="material-icons">account_box</i><span class="hidden-xs navbar-text"> Account</span></a></li>
+        <li id="nav-bar__support"><a href="#"><i class="material-icons">help_outline</i><span class="hidden-xs navbar-text"> Support</span></a></li>
+      </ul>
     </div>
-    <div class='demo'>
-      <h3>Try It Out First</h3>
-      <div id='create-wallet'>
-        <p>Try out the form below to generate a wallet on behalf of a user. Type in an email address or user identifier and press submit.</p>
-        <form class="pure-form" id="create-wallet__form" autocomplete="off">
-          <label>User ID or Email:</label><br>
-          <input name="userid" type="text" placeholder="mayor@dani.town" autofocus />
-          <button class="pure-button" type="submit">Create A Wallet</button>
-        </form>
-        <div class='wallet-demo'></div>
+  <div class="main">
+      <!--  CREATE WALLET COMPONENT -->
+    <div class="container">
+      <h1>Wallets</h1>
+      <div class="card">
+        <div class="card-content">
+          <p id="create-wallet-card-instructions">You haven't created any wallets.
+          <br>
+          <span class="subtext">It's not too late. We will help you get started.</span>
+          </p>
+          <button id="wallet-create-button">+ Create Your First Wallet</button>
+        </div>
+        <div class="card-api-instructions">
+          <div class="card-api-instructions__code-sample">
+            <code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+          </div>
+          <button><i class="material-icons">exit_to_app</i>Docs</button>
+        </div>
       </div>
+      <div id="wallet-creation-message"></div>
     </div>
-    <div id="wallet-creation-success-message"></div>
-    <div id="wallet-table"><table class="pure-table" id="wallet-table__table"></table></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>
+
+    <!--  WALLET TABLE COMPONENT -->
+    <div class="wallet-table container"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
 
       // helper for generating table rows for wallets
-      function generateHTML(wallet) {
-        return `<tr><td>${createdAt(wallet._id)}</td><td><span class="wallet-address preformatted">${wallet.address}</span></td><td>${wallet.user_id}</td><td>${wallet.balance} ETH</td></tr>`
+      function generateTableHTML(wallet) {
+        return `<tr><td>${createdAt(wallet._id)}</td><td><span class="wallet-address preformatted">${wallet.address}</span></td><td>${wallet.user_id}</td><td>${wallet.balance} ETH</td></tr>`;
       }
 
       // auth function that redirects user to login if not authed and otherwise returns dev info
@@ -54,129 +70,139 @@
         let {account} = await auth();
 
         // display the user's email in the top corner
-        // TODO: later on this should be a link to the account section
+        // TODO move from top corner to nav bar
         jQuery('#banner').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
 
-        // create the table
-        // TODO: Later on this should only be created if there are wallets to display
-        jQuery('#wallet-table__table').append('<thead><tr><th>Created</th><th>Address</th><th>UserID</th><th>Balance</th></tr></thead>');
+        // get all the user's wallets
 
-
-        // need to pass in dev id
         let {wallets} = await getWallets(account._id)
 
         await Promise.all(wallets.map(async wallet => {
           wallet.balance = await getWalletBalance(wallet._id)
         }))
 
-        let table = document.getElementById('wallet-table__table')
-        let html = wallets.map(generateHTML).join('')
-        table.innerHTML += html
+        if (jQuery.isEmptyObject(wallets)) {
+          // change the text of the create wallet box
+          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">You haven\'t created any wallets.<br><span class="subtext">It\'s not too late. We will help you get started.</span></p>');
+          jQuery('#wallet-create-button').html('+ Create Your First Wallet');
 
-        let walletAddresses = document.getElementsByClassName('wallet-address')
+        } else {
+          // change the text
+          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">Create another wallet.<br><span class="subtext">Come on. It\'s fun.</span></p>');
+          jQuery('#wallet-create-button').html('+ Create A Wallet');
 
-        // if you click on a wallet, we append to the #demo block some signing functions for you to try out
-        jQuery('.wallet-address').on('click', function(e) {
-          document.getElementById('create-wallet').className = 'border-bottom';
-          document.getElementsByClassName('wallet-demo')[0].innerHTML = signingHtml;
+          // create a table
+          let table = jQuery('.wallet-table').append('<table id="wallet-table__table"></table>');
+          table.append('<thead><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
+          let html = wallets.map(generateTableHTML).join('')
+          table.append(html);
+          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+        }
 
-          // fill in the form fields with the wallet address
-          let currentWalletAddr = e.currentTarget.innerText;
-          jQuery('[name=wallet-address]').val(currentWalletAddr);
-
-          // handle if someone tries to sign a message
-
-          jQuery('#signing-demo__form').on('submit', function(e) {
-            e.preventDefault();
-
-            // get message to sign
-            //don't need to get wallet address because already have it in currentWalletAddr
-            let messageToSign = jQuery('[name=message]').val();
-
-
-            // go sign it
-
-            jQuery.post({
-              url: `/wallets/address/${currentWalletAddr}/sign_message` ,
-              type: 'post',
-              data: {
-                message: messageToSign
-              },
-              headers: {
-                'x-auth-key': document.cookie
-              }
-            }, function(data, status) {
-              // clear form field
-              jQuery('[name=message]').val("");
-
-              // display success banner with signed message
-              // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
-              let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
-
-              // let signedMessageHtml = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
-              let signedMessageHtml = `<div id='signing-message-success-message'><h4>📜 Message: </h4><span class="preformatted" style="background-color: white;">${signedMessageObj.message}</span><h4>Message Hash:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.messageHash}</span><h4>Signature: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.signature}</span><h4>Wallet Used To Sign Message: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-
-              jQuery('#signing-demo__signed-message').html(signedMessageHtml);
-            }).fail(function(xhr, status, error) {
-            // handle fail case
-            console.log(error);
-            jQuery('[name=message]').val("");
-            jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-          })
-        })
-
-          // handle if someone tries to sign a transaction
-          // NOTE: created endpoint for signing by wallet addr but i can't test if it works without intrnet
-          // next part will look something like this:
-
-          jQuery('#signing-transaction-demo__form').on('submit', function(e) {
-            e.preventDefault();
-
-            // get message to sign
-            //don't need to get wallet address because already have it in currentWalletAddr
-            let transactionToSign = {
-              to: jQuery('[name=to_addr]').val(),
-              value: jQuery('[name=value]').val(),
-              gas: jQuery('[name=gas]').val()
-            };
-
-            // go sign it
-
-            jQuery.post({
-              url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
-              type: 'post',
-              data: {
-                "transaction": {
-                		"to": transactionToSign.to,
-                		"value": transactionToSign.value,
-                		"gas": transactionToSign.gas
-                	}
-              },
-              headers: {
-                'x-auth-key': document.cookie
-              }
-            }, function(data, status) {
-              // clear form field
-              jQuery('[name=to_addr]').val("");
-              jQuery('[name=value]').val("");
-              jQuery('[name=gas]').val("");
-
-              // display success banner with signed message
-              let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
-
-              let signedTransactionHtml = `<div id='signing-transaction-success-message'><h4>Signed Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedTransactionObj.rawTransaction}</span><h4>Wallet Used To Sign Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-
-              jQuery('#signing-transaction-demo__success-message').html(signedTransactionHtml);
-            }).fail(function(xhr, status, error) {
-            // handle fail case
-            console.log(error);
-            jQuery('[name=to_addr]').val("");
-            jQuery('[name=value]').val("");
-            jQuery('[name=gas]').val("");
-            jQuery('#signing-transaction-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-          })
-        })
-        })
+        // let walletAddresses = document.getElementsByClassName('wallet-address')
+        //
+        // // if you click on a wallet, we append to the #demo block some signing functions for you to try out
+        // jQuery('.wallet-address').on('click', function(e) {
+        //   document.getElementById('create-wallet').className = 'border-bottom';
+        //   document.getElementsByClassName('wallet-demo')[0].innerHTML = signingHtml;
+        //
+        //   // fill in the form fields with the wallet address
+        //   let currentWalletAddr = e.currentTarget.innerText;
+        //   jQuery('[name=wallet-address]').val(currentWalletAddr);
+        //
+        //   // handle if someone tries to sign a message
+        //
+        //   jQuery('#signing-demo__form').on('submit', function(e) {
+        //     e.preventDefault();
+        //
+        //     // get message to sign
+        //     //don't need to get wallet address because already have it in currentWalletAddr
+        //     let messageToSign = jQuery('[name=message]').val();
+        //
+        //
+        //     // go sign it
+        //
+        //     jQuery.post({
+        //       url: `/wallets/address/${currentWalletAddr}/sign_message` ,
+        //       type: 'post',
+        //       data: {
+        //         message: messageToSign
+        //       },
+        //       headers: {
+        //         'x-auth-key': document.cookie
+        //       }
+        //     }, function(data, status) {
+        //       // clear form field
+        //       jQuery('[name=message]').val("");
+        //
+        //       // display success banner with signed message
+        //       // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
+        //       let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
+        //
+        //       // let signedMessageHtml = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
+        //       let signedMessageHtml = `<div id='signing-message-success-message'><h4>📜 Message: </h4><span class="preformatted" style="background-color: white;">${signedMessageObj.message}</span><h4>Message Hash:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.messageHash}</span><h4>Signature: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.signature}</span><h4>Wallet Used To Sign Message: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
+        //
+        //       jQuery('#signing-demo__signed-message').html(signedMessageHtml);
+        //     }).fail(function(xhr, status, error) {
+        //     // handle fail case
+        //     console.log(error);
+        //     jQuery('[name=message]').val("");
+        //     jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+        //   })
+        // })
+        //
+        //   // handle if someone tries to sign a transaction
+        //   // NOTE: created endpoint for signing by wallet addr but i can't test if it works without intrnet
+        //   // next part will look something like this:
+        //
+        //   jQuery('#signing-transaction-demo__form').on('submit', function(e) {
+        //     e.preventDefault();
+        //
+        //     // get message to sign
+        //     //don't need to get wallet address because already have it in currentWalletAddr
+        //     let transactionToSign = {
+        //       to: jQuery('[name=to_addr]').val(),
+        //       value: jQuery('[name=value]').val(),
+        //       gas: jQuery('[name=gas]').val()
+        //     };
+        //
+        //     // go sign it
+        //
+        //     jQuery.post({
+        //       url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
+        //       type: 'post',
+        //       data: {
+        //         "transaction": {
+        //         		"to": transactionToSign.to,
+        //         		"value": transactionToSign.value,
+        //         		"gas": transactionToSign.gas
+        //         	}
+        //       },
+        //       headers: {
+        //         'x-auth-key': document.cookie
+        //       }
+        //     }, function(data, status) {
+        //       // clear form field
+        //       jQuery('[name=to_addr]').val("");
+        //       jQuery('[name=value]').val("");
+        //       jQuery('[name=gas]').val("");
+        //
+        //       // display success banner with signed message
+        //       let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
+        //
+        //       let signedTransactionHtml = `<div id='signing-transaction-success-message'><h4>Signed Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedTransactionObj.rawTransaction}</span><h4>Wallet Used To Sign Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
+        //
+        //       jQuery('#signing-transaction-demo__success-message').html(signedTransactionHtml);
+        //     }).fail(function(xhr, status, error) {
+        //     // handle fail case
+        //     console.log(error);
+        //     jQuery('[name=to_addr]').val("");
+        //     jQuery('[name=value]').val("");
+        //     jQuery('[name=gas]').val("");
+        //     jQuery('#signing-transaction-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+        //   })
+        // })
+        // })
       }()
 
       // get all the wallets that are attached to the logged in developer
@@ -209,42 +235,53 @@
       };
 
     //   when submit the generate wallet form, generate a wallet for the user id
-      jQuery('#create-wallet__form').on('submit', function(e) {
+      jQuery('#wallet-create-button').on('click', function(e) {
         e.preventDefault();
 
-        // get userid
-        var userid = jQuery('[name=userid]').val();
-
-        // send the data to the create wallet api
+        // send the request to the create wallet api
         jQuery.post({
           url: '/wallets/',
           type: 'post',
           data: {
-            "user_id": userid
+            "user_id": "demo_user_id"
           },
           headers: {
             'x-auth-key': document.cookie
           }
         }, function(data, status) {
-          // clear form field
-          jQuery('[name=userid]').val("");
 
-          jQuery('#wallet-creation-success-message').html(`<p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span> for the user ${data.wallet.user_id}</p>`);
+          jQuery('#wallet-creation-message').addClass('success').addClass('message-box').html(`<i class="material-icons">favorite_border</i><p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span></p>`);
+
+          // change the text of the create wallet box
+          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">Create another wallet.<br><span class="subtext">Come on. It\'s fun.</span></p>');
+          jQuery('#wallet-create-button').html('+ Create A Wallet');
+
 
           // add the new wallet to the list
-          // TODO fetch balance for it
-          jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+          // if first wallet, create the whole table
+          // otherwise just append the row
+          if (jQuery('.wallet-table').html() === '') {
+            // this is the first wallet, create the whole table
+            console.log('first wallet');
+            let table = jQuery('.wallet-table').append('<table id="wallet-table__table"></table>');
+            table.append('<thead><tr><th>Created Date</th><th>Address</th><th>Owner</th></tr></thead>');
+            table.append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+            table.append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+
+          } else {
+            console.log('not first wallet');
+            jQuery('#wallet-table__table').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+          }
 
         }).fail(function(xhr, status, error) {
         // error handling
           console.log(error);
-          jQuery('[name=userid]').val("");
-          jQuery('body').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+          jQuery('#wallet-creation-message').addClass('error').addClass.html('<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>');
         });
       })
 
-      // html for wallet functions - these appear when a wallet address is clicked.
-      const signingHtml = "<div id='signing-demo'> <h3>Sign A Message</h3> <div id='signing-demo__container'> <p>Try out the form below to sign a message using your chosen wallet address. Click on a wallet below to use that address to sign the message.</p> <form class='pure-form pure-form-stacked' id='signing-demo__form' autocomplete='off'> <label>Message To Sign:</label> <input name='message' type='text' placeholder='super legit message' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> </div> <div id='signing-demo__signed-message'></div> <div id='signing-transaction-demo'> <h3>Sign A Transaction</h3> <div id='signing-transaction-demo__container'> <p>Try out the form below to sign a transaction using a chosen wallet. To choose a wallet, click on it on the page below. This doesn't actually send eth, it just creates a signed transaction object.</p> <form class='pure-form pure-form-stacked' id='signing-transaction-demo__form' autocomplete='off'> <label>To Address</label> <input name='to_addr' type='text' placeholder='0x8d3e809fbd258083a5ba004a527159da535c8aba' /> <label>Amount of ETH to send:</label> <input name='value' type='text' placeholder='0.01' /> <label>Amount of gas to send:</label> <input name='gas' type='text' placeholder='2000000' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> <div id='signing-transaction-demo__success-message'></div> </div>"
+      // // html for wallet functions - these appear when a wallet address is clicked.
+      // const signingHtml = "<div id='signing-demo'> <h3>Sign A Message</h3> <div id='signing-demo__container'> <p>Try out the form below to sign a message using your chosen wallet address. Click on a wallet below to use that address to sign the message.</p> <form class='pure-form pure-form-stacked' id='signing-demo__form' autocomplete='off'> <label>Message To Sign:</label> <input name='message' type='text' placeholder='super legit message' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> </div> <div id='signing-demo__signed-message'></div> <div id='signing-transaction-demo'> <h3>Sign A Transaction</h3> <div id='signing-transaction-demo__container'> <p>Try out the form below to sign a transaction using a chosen wallet. To choose a wallet, click on it on the page below. This doesn't actually send eth, it just creates a signed transaction object.</p> <form class='pure-form pure-form-stacked' id='signing-transaction-demo__form' autocomplete='off'> <label>To Address</label> <input name='to_addr' type='text' placeholder='0x8d3e809fbd258083a5ba004a527159da535c8aba' /> <label>Amount of ETH to send:</label> <input name='value' type='text' placeholder='0.01' /> <label>Amount of gas to send:</label> <input name='gas' type='text' placeholder='2000000' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> <div id='signing-transaction-demo__success-message'></div> </div>"
 
     </script>
   </body>
