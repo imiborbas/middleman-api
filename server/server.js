@@ -53,20 +53,20 @@ app.get('/signup', (req, res) => {
 app.get('/developers', (req, res) => {
  // render a dev portal homepage
  res.render('developer.hbs', {
-   pageTitle: 'Kelp Developer Portal'
+   pageTitle: 'Cashew Developer Portal'
  })
 })
 
 app.get('/account', (req, res) => {
   // render an account settings page
   res.render('account.hbs', {
-    pageTitle: 'Kelp | Account Settings'
+    pageTitle: 'Cashew | Account Settings'
   })
 })
 
 app.get('/wallet-demo', (req, res) => {
   res.render('wallet-api.hbs', {
-    pageTitle: 'Kelp Developer Portal'
+    pageTitle: 'Cashew Developer Portal'
   });
 });
 
