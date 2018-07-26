@@ -57,6 +57,13 @@ app.get('/developers', (req, res) => {
  })
 })
 
+app.get('/functions', (req, res) => {
+ // render a dev portal homepage
+ res.render('functions.hbs', {
+   pageTitle: 'Cashew Developer Portal'
+ })
+})
+
 app.get('/account', (req, res) => {
   // render an account settings page
   res.render('account.hbs', {

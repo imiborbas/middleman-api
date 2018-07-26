@@ -83,6 +83,10 @@ li:hover, li:active, .nav-bar-active {
     color: white; /* this doesn't work for some reason */
 }
 
+.nav-bar-active span, .nav-bar-active a, .nav-bar-active i {
+  color: white;
+}
+
 li a:hover, li a:active {
   color: white;
 }
