@@ -28,7 +28,7 @@
         </div>
         <div class="card-api-instructions">
           <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
           </div>
           <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
@@ -98,7 +98,7 @@
           let table = jQuery('.wallet-table').append('<table id="wallet-table__table"><thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></th><th>Balance</th></tr></thead><tbody id="wallet-table__table__tbody"></tbody></table>');
           let html = wallets.map(generateTableHTML).join('')
           jQuery('#wallet-table__table__tbody').html(html);
-          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
         }
       }()
 
@@ -162,7 +162,7 @@
             let table = jQuery('.wallet-table').append('<table id="wallet-table__table"><thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></th><th>Balance</th></tr></thead><tbody id="wallet-table__table__tbody"></tbody></table>');
             let html = `<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`;
             jQuery('#wallet-table__table__tbody').html(html);
-            jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+            jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
 
           } else {
             jQuery('#wallet-table__table__tbody').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);

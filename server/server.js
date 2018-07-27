@@ -53,27 +53,27 @@ app.get('/signup', (req, res) => {
 app.get('/developers', (req, res) => {
  // render a dev portal homepage
  res.render('developer.hbs', {
-   pageTitle: 'Cashew Developer Portal'
+   pageTitle: 'Middleman Developer Portal'
  })
 })
 
 app.get('/functions', (req, res) => {
  // render a dev portal homepage
  res.render('functions.hbs', {
-   pageTitle: 'Cashew Developer Portal'
+   pageTitle: 'Middleman Developer Portal'
  })
 })
 
 app.get('/account', (req, res) => {
   // render an account settings page
   res.render('account.hbs', {
-    pageTitle: 'Cashew | Account Settings'
+    pageTitle: 'Middleman | Account Settings'
   })
 })
 
 app.get('/wallet-demo', (req, res) => {
   res.render('wallet-api.hbs', {
-    pageTitle: 'Cashew Developer Portal'
+    pageTitle: 'Middleman Developer Portal'
   });
 });
 
