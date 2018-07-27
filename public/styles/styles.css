@@ -50,6 +50,10 @@ body {
   padding-left: 10%;
 }
 
+.nav-bar .hidden-xs h3 {
+  padding-left: 15%;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -425,6 +429,11 @@ th, td {
   font-size: 0.8em;
   color: var(--light-grey);
   text-decoration: none;
+}
+
+#email-card .card-content preformatted, #authtoken-card .card-content preformatted {
+  overflow-wrap: break-word;
+  background-color: var(--bg-grey);
 }
 
 /* small screens */

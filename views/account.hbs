@@ -4,10 +4,23 @@
     {{> head}}
   </head>
   <body>
-    {{> header}}
-
-    <div class="centered-form">
-      <h3>Account Settings</h3>
+    <div class="nav-bar">
+      <!-- <img class="logo" src="https://kelp.nyc3.digitaloceanspaces.com/logo.svg"> -->
+      <span class="hidden-xs"><h3>Middleman</h3></span>
+      <ul>
+        <li id="nav-bar__wallets"><a href="/developers"><i class="material-icons">account_balance_wallet</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
+        <li id="nav-bar__functions"><a href="/functions"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
+        <li id="nav-bar__docs"><a href="http://docs.kelp.cloud"><i class="material-icons">description</i><span class="hidden-xs navbar-text"> Docs</span></a></li>
+        <li id="nav-bar__account"><a href="/account"><i class="material-icons">account_box</i><span class="hidden-xs navbar-text"> Account</span></a></li>
+        <li id="nav-bar__support"><a href="mailto:mayor@dani.town"><i class="material-icons">help_outline</i><span class="hidden-xs navbar-text"> Support</span></a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <div class="container">
+        <h1>Account Settings</h1>
+        <div id="email-card" class="card"><div class="card-content"></div></div>
+        <div id="authtoken-card" class="card"><div class="card-content"></div></div>
+      </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
@@ -32,14 +45,18 @@
 
     //main
     void async function() {
+      // make the account link active
+      jQuery('#nav-bar__account').addClass('nav-bar-active');
+
       //first auth the user. devId is at account._id, email is at account.email
       let {account} = await auth();
 
       // display the user's email in the top corner
-      jQuery('#banner').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
+      jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="#"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
 
       // display email and authkey on the page
-      jQuery('.centered-form').append(`<h4>✉️ Your Email:</h4><span class="preformatted" style="background-color: white;">${account.email}</span><h4>🔑 Your API Token:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${document.cookie}</span>`);
+      jQuery('#email-card .card-content').html(`<h4>✉️ Your Email:</h4><span class="preformatted">${account.email}</span>`);
+      jQuery('#authtoken-card .card-content').html(`<h4>🔑 Your API Token:</h4><span class="preformatted">${document.cookie}</span>`);
 
 
     }()
