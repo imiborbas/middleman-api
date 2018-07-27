@@ -362,6 +362,54 @@ th, td {
   display: block;
 }
 
+.auth-container {
+  width: 400px;
+  margin: 0 auto;
+  padding-top: 3em;
+  padding-bottom: 2em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+.auth-container .card-form {
+  padding-top: 1em;
+  padding-bottom: 0;
+}
+
+.auth-container h1 {
+  font-weight: bold;
+  width: fit-content;
+  margin: 0 auto;
+  color: var(--blue);
+  text-transform: lowercase;
+}
+
+.auth-container p {
+  width: fit-content;
+  margin: 0 auto;
+  color: var(--light-grey);
+  text-transform: lowercase;
+  font-size: 0.8em;
+  padding: 0.8em
+}
+
+.auth-container .link {
+  width: 100%;
+  text-align: left;
+  padding-left: 2.5em;
+}
+
+.auth-container .card-content {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.auth-container .card-content a {
+  font-size: 0.8em;
+  color: var(--light-grey);
+  text-decoration: none;
+}
+
 /* small screens */
 
 @media screen and (max-width: 600px) {

@@ -2,9 +2,12 @@
 <html>
   <head>{{> head}}</head>
   <body>
-    {{> header}}
-    {{> emailPwForm}}
-    <p><a href='/login'>Login Instead</a></p>
+    <div class="container auth-container">
+      <h1>Middleman</h1>
+      <p>welcome, sign up, we are glad to have you.</p>
+      {{> emailPwForm}}
+      <p class="card-content link"><a href='/login'>Login Instead</a></p>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
