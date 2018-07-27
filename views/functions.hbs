@@ -29,7 +29,7 @@
     <form id="sign-message__form" autocomplete="off">
       <div class="form-field">
         <label>Message:</label><br>
-        <input name="message" type="text" placeholder="mayor@dani.town" autofocus />
+        <input name="message" type="text" placeholder="message" autofocus />
       </div>
       <div class="form-field">
         <label>Choose a Wallet: </label><br>
@@ -40,6 +40,7 @@
       </div>
       <button type="submit">Submit</button>
     </form>
+    <div id="sign-message-message"></div>
   </div>
 
   <div class="card-api-instructions">
@@ -62,8 +63,8 @@
   <div class="card-form">
     <form id="sign-transaction__form" autocomplete="off">
       <div class="form-field">
-        <label>Transaction:</label><br>
-        <input name="to_addr" type="text" placeholder="mayor@dani.town" autofocus />
+        <label>To:</label><br>
+        <input name="to_addr" type="text" placeholder="0x8d3e809fbd258083a5ba004a527159da535c8aba" autofocus />
       </div>
       <div class="form-field">
         <label>Amount of ETH:</label><br>
@@ -82,6 +83,7 @@
       </div>
       <button type="submit">Submit</button>
     </form>
+    <div id="sign-transaction-message"></div>
   </div>
 
   <div class="card-api-instructions">
@@ -176,11 +178,11 @@
           console.log(signedMessage);
 
           //print it to screen
-          jQuery('#sign-message__form').append(`<div class="message-box success"><i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p></div>`);
+          jQuery('#sign-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
         }).fail(function(xhr, status, error) {
           console.log(error);
           jQuery('[name=message]').val("");
-          jQuery('#sign-message__form').append(`<div class="message-box error"><i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+          jQuery('#sign-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
         })
       })
 
@@ -222,45 +224,16 @@
           console.log(signedTransaction);
 
           //print it to screen
-          jQuery('#sign-transaction__form').append(`<div class="message-box success"><i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p></div>`);
+          jQuery('#sign-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
         }).fail(function(xhr, status, error) {
           console.log(error);
           jQuery('[name=to_addr]').val("");
           jQuery('[name=value]').val("");
           jQuery('[name=gas]').val("");
 
-          jQuery('#sign-message__form').append(`<div class="message-box error"><i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+          jQuery('#sign-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
         })
       })
-
-      //
-      //     // go sign it
-      //
-      //     jQuery.post({
-      //       url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
-      //       type: 'post',
-      //       headers: {
-      //         'x-auth-key': document.cookie
-      //       }
-      //     }, function(data, status) {
-      //       // clear form field
-      //
-      //       // display success banner with signed message
-      //       let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
-      //
-      //       let signedTransactionHtml = `<div id='signing-transaction-success-message'><h4>Signed Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedTransactionObj.rawTransaction}</span><h4>Wallet Used To Sign Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-      //
-      //       jQuery('#signing-transaction-demo__success-message').html(signedTransactionHtml);
-      //     }).fail(function(xhr, status, error) {
-      //     // handle fail case
-      //     console.log(error);
-      //     jQuery('[name=to_addr]').val("");
-      //     jQuery('[name=value]').val("");
-      //     jQuery('[name=gas]').val("");
-      //     jQuery('#signing-transaction-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-      //   })
-      // })
-      // })
 
 
     </script>
