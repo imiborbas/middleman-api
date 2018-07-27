@@ -7,11 +7,11 @@
     <div class="nav-bar">
       <img class="logo" src="https://kelp.nyc3.digitaloceanspaces.com/logo.svg"><span class="hidden-xs"><h3>Ca$hew</h3></span>
       <ul>
-        <li id="nav-bar__wallets"><a href="#"><i class="material-icons">account_balance_wallet</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
-        <li id="nav-bar__functions"><a href="#"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
-        <li id="nav-bar__docs"><a href="#"><i class="material-icons">description</i><span class="hidden-xs navbar-text"> Docs</span></a></li>
-        <li id="nav-bar__account"><a href="#"><i class="material-icons">account_box</i><span class="hidden-xs navbar-text"> Account</span></a></li>
-        <li id="nav-bar__support"><a href="#"><i class="material-icons">help_outline</i><span class="hidden-xs navbar-text"> Support</span></a></li>
+        <li id="nav-bar__wallets"><a href="/developers"><i class="material-icons">account_balance_wallet</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
+        <li id="nav-bar__functions"><a href="/functions"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
+        <li id="nav-bar__docs"><a href="http://docs.kelp.cloud"><i class="material-icons">description</i><span class="hidden-xs navbar-text"> Docs</span></a></li>
+        <li id="nav-bar__account"><a href="/account"><i class="material-icons">account_box</i><span class="hidden-xs navbar-text"> Account</span></a></li>
+        <li id="nav-bar__support"><a href="mailto:mayor@dani.town"><i class="material-icons">help_outline</i><span class="hidden-xs navbar-text"> Support</span></a></li>
       </ul>
     </div>
   <div class="main">
@@ -26,7 +26,7 @@
   </div>
 
   <div class="card-form">
-    <form autocomplete="off">
+    <form id="sign-message__form" autocomplete="off">
       <div class="form-field">
         <label>Message:</label><br>
         <input name="message" type="text" placeholder="mayor@dani.town" autofocus />
@@ -35,9 +35,6 @@
         <label>Choose a Wallet: </label><br>
           <div class="dropdown">
           <select class="wallet-dropdown-select" onchange="">
-            <option value="walle1">Wallet 1</option>
-            <option value="wallet2">Wallet 2</option>
-            <option value="wallet3">Wallet 3</option>
           </select>
         </div>
       </div>
@@ -139,115 +136,6 @@
         // make them the options of the dropdowns
         let html = wallets.map(generateOptionsHTML).join('')
         jQuery('.wallet-dropdown-select').html(html);
-
-        await Promise.all(wallets.map(async wallet => {
-          wallet.balance = await getWalletBalance(wallet._id)
-        }))
-
-        // let walletAddresses = document.getElementsByClassName('wallet-address')
-        //
-        // // if you click on a wallet, we append to the #demo block some signing functions for you to try out
-        // jQuery('.wallet-address').on('click', function(e) {
-        //   document.getElementById('create-wallet').className = 'border-bottom';
-        //   document.getElementsByClassName('wallet-demo')[0].innerHTML = signingHtml;
-        //
-        //   // fill in the form fields with the wallet address
-        //   let currentWalletAddr = e.currentTarget.innerText;
-        //   jQuery('[name=wallet-address]').val(currentWalletAddr);
-        //
-        //   // handle if someone tries to sign a message
-        //
-        //   jQuery('#signing-demo__form').on('submit', function(e) {
-        //     e.preventDefault();
-        //
-        //     // get message to sign
-        //     //don't need to get wallet address because already have it in currentWalletAddr
-        //     let messageToSign = jQuery('[name=message]').val();
-        //
-        //
-        //     // go sign it
-        //
-        //     jQuery.post({
-        //       url: `/wallets/address/${currentWalletAddr}/sign_message` ,
-        //       type: 'post',
-        //       data: {
-        //         message: messageToSign
-        //       },
-        //       headers: {
-        //         'x-auth-key': document.cookie
-        //       }
-        //     }, function(data, status) {
-        //       // clear form field
-        //       jQuery('[name=message]').val("");
-        //
-        //       // display success banner with signed message
-        //       // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
-        //       let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
-        //
-        //       // let signedMessageHtml = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
-        //       let signedMessageHtml = `<div id='signing-message-success-message'><h4>📜 Message: </h4><span class="preformatted" style="background-color: white;">${signedMessageObj.message}</span><h4>Message Hash:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.messageHash}</span><h4>Signature: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.signature}</span><h4>Wallet Used To Sign Message: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-        //
-        //       jQuery('#signing-demo__signed-message').html(signedMessageHtml);
-        //     }).fail(function(xhr, status, error) {
-        //     // handle fail case
-        //     console.log(error);
-        //     jQuery('[name=message]').val("");
-        //     jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-        //   })
-        // })
-        //
-        //   // handle if someone tries to sign a transaction
-        //   // NOTE: created endpoint for signing by wallet addr but i can't test if it works without intrnet
-        //   // next part will look something like this:
-        //
-        //   jQuery('#signing-transaction-demo__form').on('submit', function(e) {
-        //     e.preventDefault();
-        //
-        //     // get message to sign
-        //     //don't need to get wallet address because already have it in currentWalletAddr
-        //     let transactionToSign = {
-        //       to: jQuery('[name=to_addr]').val(),
-        //       value: jQuery('[name=value]').val(),
-        //       gas: jQuery('[name=gas]').val()
-        //     };
-        //
-        //     // go sign it
-        //
-        //     jQuery.post({
-        //       url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
-        //       type: 'post',
-        //       data: {
-        //         "transaction": {
-        //         		"to": transactionToSign.to,
-        //         		"value": transactionToSign.value,
-        //         		"gas": transactionToSign.gas
-        //         	}
-        //       },
-        //       headers: {
-        //         'x-auth-key': document.cookie
-        //       }
-        //     }, function(data, status) {
-        //       // clear form field
-        //       jQuery('[name=to_addr]').val("");
-        //       jQuery('[name=value]').val("");
-        //       jQuery('[name=gas]').val("");
-        //
-        //       // display success banner with signed message
-        //       let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
-        //
-        //       let signedTransactionHtml = `<div id='signing-transaction-success-message'><h4>Signed Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedTransactionObj.rawTransaction}</span><h4>Wallet Used To Sign Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-        //
-        //       jQuery('#signing-transaction-demo__success-message').html(signedTransactionHtml);
-        //     }).fail(function(xhr, status, error) {
-        //     // handle fail case
-        //     console.log(error);
-        //     jQuery('[name=to_addr]').val("");
-        //     jQuery('[name=value]').val("");
-        //     jQuery('[name=gas]').val("");
-        //     jQuery('#signing-transaction-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-        //   })
-        // })
-        // })
       }()
 
       // get all the wallets that are attached to the logged in developer
@@ -260,6 +148,110 @@
 
         return res.json()
       }
+
+      // send message js
+      jQuery('#sign-message__form').on('submit', function(e) {
+        e.preventDefault();
+
+        // get message to sign
+        let messageToSign = jQuery('[name=message]').val();
+
+        // get wallet address
+        let walletAddress = jQuery('#sign-message__form select').val();
+
+        // go sign it
+        jQuery.post({
+          url: `/wallets/address/${walletAddress}/sign_message` ,
+          type: 'post',
+          data: {
+            message: messageToSign
+          },
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data, status) {
+          // clear form field
+          jQuery('[name=message]').val("");
+          let signedMessage = JSON.parse(JSON.stringify(data)).message;
+          console.log(signedMessage);
+
+          //print it to screen
+          jQuery('#sign-message__form').append(`<div class="message-box success"><i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p></div>`);
+        }).fail(function(xhr, status, error) {
+          console.log(error);
+          jQuery('#sign-message__form').append(`<div class="message-box error"><i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        })
+
+      })
+      //       // display success banner with signed message
+      //       // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
+      //       let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
+      //
+      //       // let signedMessageHtml = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
+      //       let signedMessageHtml = `<div id='signing-message-success-message'><h4>📜 Message: </h4><span class="preformatted" style="background-color: white;">${signedMessageObj.message}</span><h4>Message Hash:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.messageHash}</span><h4>Signature: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.signature}</span><h4>Wallet Used To Sign Message: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
+      //
+      //       jQuery('#signing-demo__signed-message').html(signedMessageHtml);
+      //     }).fail(function(xhr, status, error) {
+      //     // handle fail case
+      //     console.log(error);
+      //     jQuery('[name=message]').val("");
+      //     jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+      //   })
+      // })
+      //
+      //   // handle if someone tries to sign a transaction
+      //   // NOTE: created endpoint for signing by wallet addr but i can't test if it works without intrnet
+      //   // next part will look something like this:
+      //
+      //   jQuery('#signing-transaction-demo__form').on('submit', function(e) {
+      //     e.preventDefault();
+      //
+      //     // get message to sign
+      //     //don't need to get wallet address because already have it in currentWalletAddr
+      //     let transactionToSign = {
+      //       to: jQuery('[name=to_addr]').val(),
+      //       value: jQuery('[name=value]').val(),
+      //       gas: jQuery('[name=gas]').val()
+      //     };
+      //
+      //     // go sign it
+      //
+      //     jQuery.post({
+      //       url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
+      //       type: 'post',
+      //       data: {
+      //         "transaction": {
+      //         		"to": transactionToSign.to,
+      //         		"value": transactionToSign.value,
+      //         		"gas": transactionToSign.gas
+      //         	}
+      //       },
+      //       headers: {
+      //         'x-auth-key': document.cookie
+      //       }
+      //     }, function(data, status) {
+      //       // clear form field
+      //       jQuery('[name=to_addr]').val("");
+      //       jQuery('[name=value]').val("");
+      //       jQuery('[name=gas]').val("");
+      //
+      //       // display success banner with signed message
+      //       let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
+      //
+      //       let signedTransactionHtml = `<div id='signing-transaction-success-message'><h4>Signed Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedTransactionObj.rawTransaction}</span><h4>Wallet Used To Sign Transaction: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
+      //
+      //       jQuery('#signing-transaction-demo__success-message').html(signedTransactionHtml);
+      //     }).fail(function(xhr, status, error) {
+      //     // handle fail case
+      //     console.log(error);
+      //     jQuery('[name=to_addr]').val("");
+      //     jQuery('[name=value]').val("");
+      //     jQuery('[name=gas]').val("");
+      //     jQuery('#signing-transaction-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
+      //   })
+      // })
+      // })
+
 
     </script>
   </body>
