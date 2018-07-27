@@ -60,18 +60,18 @@
   </div>
 
   <div class="card-form">
-    <form autocomplete="off">
+    <form id="sign-transaction__form" autocomplete="off">
       <div class="form-field">
         <label>Transaction:</label><br>
         <input name="to_addr" type="text" placeholder="mayor@dani.town" autofocus />
       </div>
       <div class="form-field">
         <label>Amount of ETH:</label><br>
-        <input name="to_addr" type="text" placeholder="1 ETH" autofocus />
+        <input name="value" type="text" placeholder="1 ETH" autofocus />
       </div>
       <div class="form-field">
         <label>Gas:</label><br>
-        <input name="to_addr" type="text" placeholder="100000" autofocus />
+        <input name="gas" type="text" placeholder="100000" autofocus />
       </div>
       <div class="form-field">
         <label>Choose a Wallet: </label><br>
@@ -179,61 +179,71 @@
           jQuery('#sign-message__form').append(`<div class="message-box success"><i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p></div>`);
         }).fail(function(xhr, status, error) {
           console.log(error);
+          jQuery('[name=message]').val("");
           jQuery('#sign-message__form').append(`<div class="message-box error"><i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
         })
-
       })
-      //       // display success banner with signed message
-      //       // TODO pretty print this. i think it should be JSON.parse(JSON.stringify(data)).message.messageHash but like who knows
-      //       let signedMessageObj = JSON.parse(JSON.stringify(data)).message;
-      //
-      //       // let signedMessageHtml = `<table class='pure-table' id='signing-demo__success-table'><thead><tr><th>Field</th><th>Value</th><tr></thead><tbody><tr><td>Message</td><td>${signedMessageObj.message}</td></tr><tr><td>Message Hash</td><td>${signedMessageObj.messageHash}</td></tr><tr><td>Signature</td><td>${signedMessageObj.signature}</td></tr></tbody></table>`;
-      //       let signedMessageHtml = `<div id='signing-message-success-message'><h4>📜 Message: </h4><span class="preformatted" style="background-color: white;">${signedMessageObj.message}</span><h4>Message Hash:</h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.messageHash}</span><h4>Signature: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${signedMessageObj.signature}</span><h4>Wallet Used To Sign Message: </h4><span class="preformatted" style="background-color: white; overflow-wrap: break-word;">${currentWalletAddr}</span></div>`;
-      //
-      //       jQuery('#signing-demo__signed-message').html(signedMessageHtml);
-      //     }).fail(function(xhr, status, error) {
-      //     // handle fail case
-      //     console.log(error);
-      //     jQuery('[name=message]').val("");
-      //     jQuery('#signing-demo__form').append('<div class="error"> Something went horribly, horribly wrong.</div>');
-      //   })
-      // })
-      //
-      //   // handle if someone tries to sign a transaction
-      //   // NOTE: created endpoint for signing by wallet addr but i can't test if it works without intrnet
-      //   // next part will look something like this:
-      //
-      //   jQuery('#signing-transaction-demo__form').on('submit', function(e) {
-      //     e.preventDefault();
-      //
-      //     // get message to sign
-      //     //don't need to get wallet address because already have it in currentWalletAddr
-      //     let transactionToSign = {
-      //       to: jQuery('[name=to_addr]').val(),
-      //       value: jQuery('[name=value]').val(),
-      //       gas: jQuery('[name=gas]').val()
-      //     };
+
+      // sign transaction js
+      jQuery('#sign-transaction__form').on('submit', function(e) {
+        e.preventDefault();
+
+        // get transaction to sign
+        let transactionToSign = {
+          to: jQuery('[name=to_addr]').val(),
+          value: jQuery('[name=value]').val(),
+          gas: jQuery('[name=gas]').val()
+        };
+
+        // get wallet address
+        let walletAddress = jQuery('#sign-message__form select').val();
+
+        // go sign it
+        jQuery.post({
+          url: `/wallets/address/${walletAddress}/sign_transaction` ,
+          type: 'post',
+          data: {
+            "transaction": {
+                "to": transactionToSign.to,
+                "value": transactionToSign.value,
+                "gas": transactionToSign.gas
+              }
+          },
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data, status) {
+          // clear form field
+          jQuery('[name=to_addr]').val("");
+          jQuery('[name=value]').val("");
+          jQuery('[name=gas]').val("");
+
+          let signedTransaction = JSON.parse(JSON.stringify(data)).signedTransaction;
+          console.log(signedTransaction);
+
+          //print it to screen
+          jQuery('#sign-transaction__form').append(`<div class="message-box success"><i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p></div>`);
+        }).fail(function(xhr, status, error) {
+          console.log(error);
+          jQuery('[name=to_addr]').val("");
+          jQuery('[name=value]').val("");
+          jQuery('[name=gas]').val("");
+
+          jQuery('#sign-message__form').append(`<div class="message-box error"><i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        })
+      })
+
       //
       //     // go sign it
       //
       //     jQuery.post({
       //       url: `/wallets/address/${currentWalletAddr}/sign_transaction` ,
       //       type: 'post',
-      //       data: {
-      //         "transaction": {
-      //         		"to": transactionToSign.to,
-      //         		"value": transactionToSign.value,
-      //         		"gas": transactionToSign.gas
-      //         	}
-      //       },
       //       headers: {
       //         'x-auth-key': document.cookie
       //       }
       //     }, function(data, status) {
       //       // clear form field
-      //       jQuery('[name=to_addr]').val("");
-      //       jQuery('[name=value]').val("");
-      //       jQuery('[name=gas]').val("");
       //
       //       // display success banner with signed message
       //       let signedTransactionObj = JSON.parse(JSON.stringify(data)).signedTransaction;
