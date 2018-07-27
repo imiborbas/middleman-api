@@ -386,6 +386,7 @@ th, td {
   border-color: white;
   padding-bottom: 0.3em;
   padding-top: 1em;
+  color: white;
 }
 
 .auth-container .card-form .form-field input::placeholder {

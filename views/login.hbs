@@ -2,9 +2,12 @@
 <html>
   <head>{{> head}}</head>
   <body>
-    {{> header}}
-    {{> emailPwForm}}
-    <p><a href='/signup'>Signup Instead</a></p>
+    <div class="container auth-container">
+      <h1>Middleman</h1>
+      <p>welcome back, happy to see you again.</p>
+      {{> emailPwForm}}
+      <p class="card-content link"><a href='/signup'>Signup Instead</a></p>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
       //on 2 args: name of event, function to call
@@ -39,7 +42,7 @@
         // error handling
           jQuery('[name=email]').val("");
           jQuery('[name=password]').val("");
-          jQuery('#emailPwForm').append('<div class="error" id="invalid-signup-message">🤷🏽‍♀️Invalid creds, but you can try again.</div>');
+          jQuery('#emailPwForm').append('<div class="error message-box" id="invalid-signup-message">🤷🏽‍♀️Invalid creds, but you can try again.</div>');
         });
       })
     </script>
