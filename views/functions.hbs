@@ -8,45 +8,99 @@
       <img class="logo" src="https://kelp.nyc3.digitaloceanspaces.com/logo.svg"><span class="hidden-xs"><h3>Ca$hew</h3></span>
       <ul>
         <li id="nav-bar__wallets"><a href="#"><i class="material-icons">account_balance_wallet</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
-        <li id="nav-bar__wallets"><a href="#"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
+        <li id="nav-bar__functions"><a href="#"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
         <li id="nav-bar__docs"><a href="#"><i class="material-icons">description</i><span class="hidden-xs navbar-text"> Docs</span></a></li>
         <li id="nav-bar__account"><a href="#"><i class="material-icons">account_box</i><span class="hidden-xs navbar-text"> Account</span></a></li>
         <li id="nav-bar__support"><a href="#"><i class="material-icons">help_outline</i><span class="hidden-xs navbar-text"> Support</span></a></li>
       </ul>
     </div>
   <div class="main">
-      <!--  CREATE WALLET COMPONENT -->
+      <!--  CARDS FOR FUNCTIONS -->
     <div class="container">
-      <h1>Wallets</h1>
-      <div class="card">
-        <div class="card-content">
-          <p id="create-wallet-card-instructions">You haven't created any wallets.
-          <br>
-          <span class="subtext">It's not too late. We will help you get started.</span>
-          </p>
-          <button id="wallet-create-button">+ Create Your First Wallet</button>
-        </div>
-        <div class="card-api-instructions">
-          <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
-          </div>
-          <button><i class="material-icons">exit_to_app</i>Docs</button>
+      <h1>Wallet Functions</h1>
+      <!-- sign message card -->
+<div class="card flex-card">
+  <div class="card-content">
+    <h3>Sign A Message</h3>
+    <p>You can use a Kelp wallet to sign messages.</p>
+  </div>
+
+  <div class="card-form">
+    <form autocomplete="off">
+      <div class="form-field">
+        <label>Message:</label><br>
+        <input name="message" type="text" placeholder="mayor@dani.town" autofocus />
+      </div>
+      <div class="form-field">
+        <label>Choose a Wallet: </label><br>
+          <div class="dropdown">
+          <select id="wallet-dropdown" onchange="">
+            <option value="walle1">Wallet 1</option>
+            <option value="wallet2">Wallet 2</option>
+            <option value="wallet3">Wallet 3</option>
+          </select>
         </div>
       </div>
-      <div id="wallet-creation-message"></div>
-    </div>
-
-    <!--  WALLET TABLE COMPONENT -->
-    <div class="wallet-table container"></div>
+      <button type="submit">Submit</button>
+    </form>
   </div>
+
+  <div class="card-api-instructions">
+    <div class="card-api-instructions__code-sample">
+      <code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+    </div>
+    <button><i class="material-icons">exit_to_app</i>Docs</button>
+  </div>
+</div>
+
+
+
+<!--  Sign Transaction Card -->
+<div class="card flex-card">
+  <div class="card-content">
+    <h3>Sign A Transaction</h3>
+    <p>You can use a Kelp wallet to sign transactions.</p>
+  </div>
+
+  <div class="card-form">
+    <form autocomplete="off">
+      <div class="form-field">
+        <label>Transaction:</label><br>
+        <input name="to_addr" type="text" placeholder="mayor@dani.town" autofocus />
+      </div>
+      <div class="form-field">
+        <label>Amount of ETH:</label><br>
+        <input name="to_addr" type="text" placeholder="1 ETH" autofocus />
+      </div>
+      <div class="form-field">
+        <label>Gas:</label><br>
+        <input name="to_addr" type="text" placeholder="100000" autofocus />
+      </div>
+      <div class="form-field">
+        <label>Choose a Wallet: </label><br>
+          <div class="dropdown">
+          <select id="wallet-dropdown" onchange="">
+            <option value="walle1">Wallet 1</option>
+            <option value="wallet2">Wallet 2</option>
+            <option value="wallet3">Wallet 3</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="card-api-instructions">
+    <div class="card-api-instructions__code-sample">
+      <code>curl -X POST "https://api.kelp.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+    </div>
+    <button><i class="material-icons">exit_to_app</i>Docs</button>
+  </div>
+</div>
+    </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
-
-      // helper for generating table rows for wallets
-      function generateTableHTML(wallet) {
-        return `<tr><td>${createdAt(wallet._id)}</td><td><span class="wallet-address preformatted">${wallet.address}</span></td><td>${wallet.user_id}</td><td>${wallet.balance} ETH</td></tr>`;
-      }
 
       // auth function that redirects user to login if not authed and otherwise returns dev info
       async function auth() {
@@ -68,7 +122,7 @@
       //main
       void async function() {
         // make the wallets link active
-        jQuery('#nav-bar__wallets').addClass('nav-bar-active');
+        jQuery('#nav-bar__functions').addClass('nav-bar-active');
 
         //first auth the user. devId is at account._id, email is at account.email
         let {account} = await auth();
