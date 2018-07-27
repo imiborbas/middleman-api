@@ -34,7 +34,7 @@
       <div class="form-field">
         <label>Choose a Wallet: </label><br>
           <div class="dropdown">
-          <select id="wallet-dropdown" onchange="">
+          <select class="wallet-dropdown-select" onchange="">
             <option value="walle1">Wallet 1</option>
             <option value="wallet2">Wallet 2</option>
             <option value="wallet3">Wallet 3</option>
@@ -79,10 +79,7 @@
       <div class="form-field">
         <label>Choose a Wallet: </label><br>
           <div class="dropdown">
-          <select id="wallet-dropdown" onchange="">
-            <option value="walle1">Wallet 1</option>
-            <option value="wallet2">Wallet 2</option>
-            <option value="wallet3">Wallet 3</option>
+          <select class="wallet-dropdown-select" id="wallet-dropdown" onchange="">
           </select>
         </div>
       </div>
@@ -119,6 +116,11 @@
           return developerId.json()
       }
 
+      // helper for generating options for wallets dropdown
+      function generateOptionsHTML(wallet) {
+        return `<option value=${wallet.address}>${wallet.address}</option>`;
+      }
+
       //main
       void async function() {
         // make the wallets link active
@@ -127,34 +129,20 @@
         //first auth the user. devId is at account._id, email is at account.email
         let {account} = await auth();
 
-        // display the user's email in the top corner
-        // TODO move from top corner to nav bar
-        jQuery('#banner').append(`<p id="my-email"><a href="/account">${account.email}</a></p>`);
+        // display the user's email in the bottom corner
+        jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="#"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
 
         // get all the user's wallets
 
         let {wallets} = await getWallets(account._id)
 
+        // make them the options of the dropdowns
+        let html = wallets.map(generateOptionsHTML).join('')
+        jQuery('.wallet-dropdown-select').html(html);
+
         await Promise.all(wallets.map(async wallet => {
           wallet.balance = await getWalletBalance(wallet._id)
         }))
-
-        if (jQuery.isEmptyObject(wallets)) {
-          // change the text of the create wallet box
-          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">You haven\'t created any wallets.<br><span class="subtext">It\'s not too late. We will help you get started.</span></p>');
-          jQuery('#wallet-create-button').html('+ Create Your First Wallet');
-
-        } else {
-          // change the text
-          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">Create another wallet.<br><span class="subtext">Come on. It\'s fun.</span></p>');
-          jQuery('#wallet-create-button').html('+ Create A Wallet');
-
-          // create a table
-          let table = jQuery('.wallet-table').append('<table id="wallet-table__table"><thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></th><th>Balance</th></tr></thead><tbody id="wallet-table__table__tbody"></tbody></table>');
-          let html = wallets.map(generateTableHTML).join('')
-          jQuery('#wallet-table__table__tbody').html(html);
-          jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
-        }
 
         // let walletAddresses = document.getElementsByClassName('wallet-address')
         //
@@ -272,71 +260,6 @@
 
         return res.json()
       }
-
-      // get wallet balance for a wallet
-      async function getWalletBalance(walletId) {
-        let res = await fetch(`/wallets/${walletId}/balance`, {
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        })
-
-        let {balance} = await res.json()
-
-        return balance
-      }
-
-      // Helper function to get the wallet created date from its id
-      var createdAt = (walletId) => {
-        return new Date(parseInt(walletId.substring(0, 8), 16) * 1000).toLocaleDateString('en-UK');
-      };
-
-    //   when submit the generate wallet form, generate a wallet for the user id
-      jQuery('#wallet-create-button').on('click', function(e) {
-        e.preventDefault();
-
-        // send the request to the create wallet api
-        jQuery.post({
-          url: '/wallets/',
-          type: 'post',
-          data: {
-            "user_id": "demo_user_id"
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
-
-          jQuery('#wallet-creation-message').addClass('success').addClass('message-box').html(`<i class="material-icons">favorite_border</i><p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span></p>`);
-
-          // change the text of the create wallet box
-          jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">Create another wallet.<br><span class="subtext">Come on. It\'s fun.</span></p>');
-          jQuery('#wallet-create-button').html('+ Create A Wallet');
-
-
-          // add the new wallet to the list
-          // if first wallet, create the whole table
-          // otherwise just append the row
-          if (jQuery('.wallet-table').html() === '') {
-            // this is the first wallet, create the whole table
-            let table = jQuery('.wallet-table').append('<table id="wallet-table__table"><thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></th><th>Balance</th></tr></thead><tbody id="wallet-table__table__tbody"></tbody></table>');
-            let html = `<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`;
-            jQuery('#wallet-table__table__tbody').html(html);
-            jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.cashew.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
-
-          } else {
-            jQuery('#wallet-table__table__tbody').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
-          }
-
-        }).fail(function(xhr, status, error) {
-        // error handling
-          console.log(error);
-          jQuery('#wallet-creation-message').addClass('error').addClass.html('<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>');
-        });
-      })
-
-      // // html for wallet functions - these appear when a wallet address is clicked.
-      // const signingHtml = "<div id='signing-demo'> <h3>Sign A Message</h3> <div id='signing-demo__container'> <p>Try out the form below to sign a message using your chosen wallet address. Click on a wallet below to use that address to sign the message.</p> <form class='pure-form pure-form-stacked' id='signing-demo__form' autocomplete='off'> <label>Message To Sign:</label> <input name='message' type='text' placeholder='super legit message' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> </div> <div id='signing-demo__signed-message'></div> <div id='signing-transaction-demo'> <h3>Sign A Transaction</h3> <div id='signing-transaction-demo__container'> <p>Try out the form below to sign a transaction using a chosen wallet. To choose a wallet, click on it on the page below. This doesn't actually send eth, it just creates a signed transaction object.</p> <form class='pure-form pure-form-stacked' id='signing-transaction-demo__form' autocomplete='off'> <label>To Address</label> <input name='to_addr' type='text' placeholder='0x8d3e809fbd258083a5ba004a527159da535c8aba' /> <label>Amount of ETH to send:</label> <input name='value' type='text' placeholder='0.01' /> <label>Amount of gas to send:</label> <input name='gas' type='text' placeholder='2000000' /> <label>Wallet To Use (Choose One By Clicking on It Below):</label> <input name='wallet-address' type='text' placeholder='0x8d3...' disabled /> <button class='pure-button' type='submit'>Sign It</button> </form> </div> <div id='signing-transaction-demo__success-message'></div> </div>"
 
     </script>
   </body>

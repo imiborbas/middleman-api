@@ -91,6 +91,18 @@ li a:hover, li a:active {
   color: white;
 }
 
+#nav-bar__email {
+  text-align: center;
+  position: absolute;
+  bottom: 20px;
+  left: -20px;
+  font-size: 0.8em;
+}
+
+#nav-bar__email:hover {
+  background-color: var(--blue);
+}
+
 .material-icons {
   position: relative;
   top: 5px;
