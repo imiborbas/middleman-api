@@ -371,9 +371,25 @@ th, td {
   padding-right: 1.5em;
 }
 
+.auth-container .card {
+  background: linear-gradient(90deg, var(--dk-blue) 0%, var(--blue) 100%);
+}
+
 .auth-container .card-form {
   padding-top: 1em;
   padding-bottom: 0;
+  color: white;
+}
+
+.auth-container .card-form .form-field input {
+  background-color: inherit;
+  border-color: white;
+  padding-bottom: 0.3em;
+  padding-top: 1em;
+}
+
+.auth-container .card-form .form-field input::placeholder {
+  color: var(--light-grey);
 }
 
 .auth-container h1 {
