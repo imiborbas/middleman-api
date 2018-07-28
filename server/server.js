@@ -116,7 +116,6 @@ app.get('/wallets/:id', authenticate, (req, res) => {
   });
 })
 
-// TODO
 // get balance for a wallet by wallet id
 app.get('/wallets/:id/balance', authenticate, (req, res) => {
   getWalletBalance(req.params.id, req.developer._id).then((balance) => {
@@ -128,7 +127,6 @@ app.get('/wallets/:id/balance', authenticate, (req, res) => {
   res.status(400).send(err);
 })
 
-// TODO
 // get balance for a wallet by its addr
 app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
   getWalletIdByAddr(req.params.addr, req.developer._id).then((walletId) => {
@@ -144,7 +142,6 @@ app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
   })
 })
 
-// TODO
 // create a wallet
 app.post('/wallets', authenticate, (req, res) => {
   createWallet(req.body.user_id, req.developer._id).then((wallet) => {
@@ -157,13 +154,28 @@ app.post('/wallets', authenticate, (req, res) => {
 // TODO
 // signTxn by wallet by addr
 app.post('/wallets/address/:addr/signTransaction', authenticate, (req, res) => {
-
+  signTransactionByAddr(req.params.addr, req.developer._id, req.body.transaction).then((signedTransaction) => {
+    res.send({signedTransaction});
+  }, (err) => {
+    console.log(err);
+    res.status(400).send();
+  })
+}, (err) => {
+  console.log(err);
+  res.status(400).send();
 })
 
-// TODO
 // signTxn by wallet by wallet id
 app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
-
+  signTransaction(req.params.id, req.developer._id, req.body.transaction).then((signedTransaction) => {
+    res.send({signedTransaction});
+  }, (err) => {
+    console.log(err);
+    res.status(400).send();
+  })
+}, (err) => {
+  console.log(err);
+  res.status(400).send();
 })
 
 // TODO
@@ -222,32 +234,6 @@ app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
     res.send(e);
   });
 });
-
-// Sign a transaction
-// req.body must include transaction to sign
-app.post('/wallets/:id/sign_transaction', authenticate, (req, res) => {
-    signTransaction(req.params.id, req.developer._id, req.body.transaction).then((signedTransaction) => {
-      res.send({signedTransaction});
-    }, (err) => {
-      console.log(err);
-      res.status(400).send();
-    })
-  }, (err) => {
-    console.log(err);
-    res.status(400).send();
-})
-
-app.post('/wallets/address/:addr/sign_transaction', authenticate, (req, res) => {
-    signTransactionByAddr(req.params.addr, req.developer._id, req.body.transaction).then((signedTransaction) => {
-      res.send({signedTransaction});
-    }, (err) => {
-      console.log(err);
-      res.status(400).send();
-    })
-  }, (err) => {
-    console.log(err);
-    res.status(400).send();
-})
 
 // Sign a message
 // req.body must include message to sign
