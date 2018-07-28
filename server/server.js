@@ -11,7 +11,10 @@ const {Developer} = require('./db/models/developer');
 
 const {createWallet} = require('./create-wallet');
 const {getWalletById} = require('./get-wallet-by-id');
+const {getWalletIdByAddr} = require('./get-wallet-by-id');
+const {getWalletByAddr} = require('./get-wallet-by-id');
 const {getWalletByDeveloper} = require('./get-wallet-by-id');
+const {getWalletsByUserId} = require('./get-wallet-by-id');
 const {signMessage} = require('./wallet-api-functions');
 const {signMessageByAddr} = require('./wallet-api-functions');
 const {signTransaction} = require('./wallet-api-functions');
@@ -71,24 +74,36 @@ app.get('/account', (req, res) => {
   })
 })
 
-app.get('/wallet-demo', (req, res) => {
-  res.render('wallet-api.hbs', {
-    pageTitle: 'Middleman Developer Portal'
+// API
+
+// get all wallets by a given developer
+app.get('/wallets', authenticate, (req, res) => {
+  getWalletByDeveloper(req.developer._id).then((wallets) => {
+    res.send({wallets});
+  }).catch((e) => {
+    res.status(400).send(e);
   });
 });
 
-// API
+// get all wallets for a user
+app.get('/wallets/user/:userid', authenticate, (req, res) => {
+ getWalletsByUserId(req.params.userid, req.developer._id).then((wallets) => {
+   res.send({wallets});
+ }).catch((e) => {
+   res.status(400).send(e);
+ })
+})
 
-// Create a New Wallet
-app.post('/wallets', authenticate, (req, res) => {
-  createWallet(req.body.user_id, req.developer._id).then((wallet) => {
+// get the wallet at an address
+app.get('/wallets/address/:addr', authenticate, (req, res) => {
+  getWalletByAddr(req.params.addr, req.developer._id).then((wallet) => {
     res.send({wallet});
-  }, (err) => {
-    res.status(400).send(err);
+  }).catch((e) => {
+    res.status(400).send(e);
   })
-});
+})
 
-// Get an existing Wallet
+// get the wallet by its id
 app.get('/wallets/:id', authenticate, (req, res) => {
   getWalletById(req.params.id, req.developer._id).then((wallet) => {
     res.send({wallet});
@@ -99,17 +114,10 @@ app.get('/wallets/:id', authenticate, (req, res) => {
       res.status(400).send();
     }
   });
-});
+})
 
-app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
-  getWalletByDeveloper(req.developer._id).then((wallets) => {
-      res.send({wallets});
-  }).catch((e) => {
-    res.send(e);
-  });
-});
-
-// Check Wallet Balance
+// TODO
+// get balance for a wallet by wallet id
 app.get('/wallets/:id/balance', authenticate, (req, res) => {
   getWalletBalance(req.params.id, req.developer._id).then((balance) => {
     res.send({balance});
@@ -119,6 +127,101 @@ app.get('/wallets/:id/balance', authenticate, (req, res) => {
   }, (err) => {
   res.status(400).send(err);
 })
+
+// TODO
+// get balance for a wallet by its addr
+app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
+  getWalletIdByAddr(req.params.addr, req.developer._id).then((walletId) => {
+    getWalletBalance(walletId, req.developer._id).then((balance) => {
+      res.send({balance});
+    }, (err) => {
+      res.status(400).send(err);
+    }, (err) => {
+      res.status(400).send(err);
+    }, (err) => {
+      res.status(400).send(err);
+    })
+  })
+})
+
+// TODO
+// create a wallet
+app.post('/wallets', authenticate, (req, res) => {
+  createWallet(req.body.user_id, req.developer._id).then((wallet) => {
+    res.send({wallet});
+  }, (err) => {
+    res.status(400).send(err);
+  })
+})
+
+// TODO
+// signTxn by wallet by addr
+app.post('/wallets/address/:addr/signTransaction', authenticate, (req, res) => {
+
+})
+
+// TODO
+// signTxn by wallet by wallet id
+app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
+
+})
+
+// TODO
+// recoverTxn by wallet by addr
+app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) => {
+
+})
+
+// TODO
+// recoverTxn by wallet by wallet id
+app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
+
+})
+
+// TODO
+// hashmessage given a wallet addr
+app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
+
+})
+
+// TODO
+// hashmessage given a wallet id
+app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
+
+})
+
+// TODO
+// sign data given a wallet address
+app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
+
+})
+
+// TODO
+// sign data given wallet id
+app.post('/wallets/:id/sign', authenticate, (req, res) => {
+
+})
+
+// TODO
+// recover signature given a wallet address
+app.post('/wallets/address/:addr/recover', authenticate, (req, res) => {
+
+})
+
+// TODO
+// recover signature given a wallet id
+app.post('/wallets/:id/recover', authenticate, (req, res) => {
+
+})
+
+// TODO: this can be deleted, ui will need to be updated
+app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
+  getWalletByDeveloper(req.developer._id).then((wallets) => {
+      res.send({wallets});
+  }).catch((e) => {
+    res.send(e);
+  });
+});
 
 // Sign a transaction
 // req.body must include transaction to sign
