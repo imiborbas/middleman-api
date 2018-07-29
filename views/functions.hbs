@@ -20,80 +20,147 @@
     <div class="container">
       <h1>Wallet Functions</h1>
       <!-- sign message card -->
-<div class="card flex-card">
-  <div class="card-content">
-    <h3>Sign A Message</h3>
-    <p>You can use a Kelp wallet to sign messages.</p>
-  </div>
+      <div class="card flex-card">
+        <div class="card-content">
+          <h3>Sign A Message</h3>
+          <p>You can use a Kelp wallet to sign messages.</p>
+        </div>
 
-  <div class="card-form">
-    <form id="sign-message__form" autocomplete="off">
-      <div class="form-field">
-        <label>Message:</label><br>
-        <input name="message" type="text" placeholder="message" autofocus />
-      </div>
-      <div class="form-field">
-        <label>Choose a Wallet: </label><br>
-          <div class="dropdown">
-          <select class="wallet-dropdown-select" onchange="">
-          </select>
+        <div class="card-form">
+          <form id="sign-message__form" autocomplete="off">
+            <div class="form-field">
+              <label>Message:</label><br>
+              <input name="message" type="text" placeholder="message" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Choose a Wallet: </label><br>
+                <div class="dropdown">
+                <select class="wallet-dropdown-select" onchange="">
+                </select>
+              </div>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div id="sign-message-message"></div>
+        </div>
+
+        <div class="card-api-instructions">
+          <div class="card-api-instructions__code-sample">
+            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+          </div>
+          <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
       </div>
-      <button type="submit">Submit</button>
-    </form>
-    <div id="sign-message-message"></div>
-  </div>
-
-  <div class="card-api-instructions">
-    <div class="card-api-instructions__code-sample">
-      <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
-    </div>
-    <button><i class="material-icons">exit_to_app</i>Docs</button>
-  </div>
-</div>
 
 
 
-<!--  Sign Transaction Card -->
-<div class="card flex-card">
-  <div class="card-content">
-    <h3>Sign A Transaction</h3>
-    <p>You can use a Kelp wallet to sign transactions.</p>
-  </div>
+      <!--  Sign Transaction Card -->
+      <div class="card flex-card">
+        <div class="card-content">
+          <h3>Sign A Transaction</h3>
+          <p>You can use a Kelp wallet to sign transactions.</p>
+        </div>
 
-  <div class="card-form">
-    <form id="sign-transaction__form" autocomplete="off">
-      <div class="form-field">
-        <label>To:</label><br>
-        <input name="to_addr" type="text" placeholder="0x8d3e809fbd258083a5ba004a527159da535c8aba" autofocus />
-      </div>
-      <div class="form-field">
-        <label>Amount of ETH:</label><br>
-        <input name="value" type="text" placeholder="1 ETH" autofocus />
-      </div>
-      <div class="form-field">
-        <label>Gas:</label><br>
-        <input name="gas" type="text" placeholder="100000" autofocus />
-      </div>
-      <div class="form-field">
-        <label>Choose a Wallet: </label><br>
-          <div class="dropdown">
-          <select class="wallet-dropdown-select" id="wallet-dropdown" onchange="">
-          </select>
+        <div class="card-form">
+          <form id="sign-transaction__form" autocomplete="off">
+            <div class="form-field">
+              <label>To:</label><br>
+              <input name="to_addr" type="text" placeholder="0x8d3e809fbd258083a5ba004a527159da535c8aba" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Amount of ETH:</label><br>
+              <input name="value" type="text" placeholder="1 ETH" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Gas:</label><br>
+              <input name="gas" type="text" placeholder="100000" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Choose a Wallet: </label><br>
+                <div class="dropdown">
+                <select class="wallet-dropdown-select" id="wallet-dropdown" onchange="">
+                </select>
+              </div>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div id="sign-transaction-message"></div>
+        </div>
+
+        <div class="card-api-instructions">
+          <div class="card-api-instructions__code-sample">
+            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+          </div>
+          <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
       </div>
-      <button type="submit">Submit</button>
-    </form>
-    <div id="sign-transaction-message"></div>
-  </div>
 
-  <div class="card-api-instructions">
-    <div class="card-api-instructions__code-sample">
-      <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
-    </div>
-    <button><i class="material-icons">exit_to_app</i>Docs</button>
-  </div>
-</div>
+      <!-- recover txn card -->
+      <div class="card flex-card">
+        <div class="card-content">
+          <h3>Recover A Transaction</h3>
+          <p>You can use a Middleman wallet to recover the address used to sign a transaction.</p>
+        </div>
+
+        <div class="card-form">
+          <form id="recover-transaction__form" autocomplete="off">
+            <div class="form-field">
+              <label>Raw Transaction:</label><br>
+              <input name="rawTxn" type="text" placeholder="0xf86180808401ef364594f0109fc8df283027b6285cc889f5aa624eac1f558" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Choose a Wallet: </label><br>
+                <div class="dropdown">
+                <select class="wallet-dropdown-select" id="wallet-dropdown" onchange="">
+                </select>
+              </div>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div id="recover-transaction-message"></div>
+        </div>
+
+        <div class="card-api-instructions">
+          <div class="card-api-instructions__code-sample">
+            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+          </div>
+          <button><i class="material-icons">exit_to_app</i>Docs</button>
+        </div>
+      </div>
+
+      <!-- hash message card -->
+      <div class="card flex-card">
+        <div class="card-content">
+          <h3>Hash A Message</h3>
+          <p>You can use a Middleman wallet to hash a message.</p>
+        </div>
+
+        <div class="card-form">
+          <form id="hash-message__form" autocomplete="off">
+            <div class="form-field">
+              <label>Message:</label><br>
+              <input name="messagetohash" type="text" placeholder="message" autofocus />
+            </div>
+            <div class="form-field">
+              <label>Choose a Wallet: </label><br>
+                <div class="dropdown">
+                <select class="wallet-dropdown-select" onchange="">
+                </select>
+              </div>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div id="hash-message-message"></div>
+        </div>
+
+        <div class="card-api-instructions">
+          <div class="card-api-instructions__code-sample">
+            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+          </div>
+          <button><i class="material-icons">exit_to_app</i>Docs</button>
+        </div>
+      </div>
+
     </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -152,7 +219,7 @@
         return res.json()
       }
 
-      // send message js
+      // ******SIGN MESSAGE******
       jQuery('#sign-message__form').on('submit', function(e) {
         e.preventDefault();
 
@@ -187,7 +254,7 @@
         })
       })
 
-      // sign transaction js
+      // ****** SIGN TRANSACTION *****
       jQuery('#sign-transaction__form').on('submit', function(e) {
         e.preventDefault();
 
@@ -203,7 +270,7 @@
 
         // go sign it
         jQuery.post({
-          url: `/wallets/address/${walletAddress}/sign_transaction` ,
+          url: `/wallets/address/${walletAddress}/signTransaction` ,
           type: 'post',
           data: {
             "transaction": {
@@ -233,6 +300,80 @@
           jQuery('[name=gas]').val("");
 
           jQuery('#sign-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        })
+      })
+
+      // ***** RECOVER TRANSACTION *****
+      jQuery('#recover-transaction__form').on('submit', function(e) {
+        e.preventDefault();
+
+        // get transaction to validate
+        let rawTxn = jQuery('[name=rawTxn]').val();
+        let walletAddress = jQuery('#recover-transaction__form select').val();
+
+        jQuery.post({
+          url: `/wallets/address/${walletAddress}/recoverTransaction` ,
+          type: 'post',
+          data: {
+            "rawTransaction": `${rawTxn}`
+          },
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data, status) {
+
+          // clear form fields
+          jQuery('[name=rawTxn]').val("");
+
+          // get the answer
+          let recoveredTransaction = JSON.parse(JSON.stringify(data)).address;
+          console.log(recoveredTransaction);
+
+          //print it to screen
+          jQuery('#recover-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>The wallet address that signed the transaction is: <span class="preformatted">${recoveredTransaction}</span></p>`);
+
+        }).fail(function(xhr, status, error) {
+          console.log(error);
+
+          // clear form fields
+          jQuery('[name=rawTxn]').val("");
+
+          // print error message to screen
+          jQuery('#recover-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        })
+      })
+
+      // ***** HASH MESSAGE *****
+      jQuery('#hash-message__form').on('submit', function(e) {
+        e.preventDefault();
+
+        // get message to hash
+        let messageToHash = jQuery('[name=messagetohash]');
+        let walletAddress = jQuery('#recover-transaction__form select').val();
+
+        jQuery.post({
+          url: `/wallets/address/${walletAddress}/hashMessage` ,
+          type: 'post',
+          data: {
+            "message": `${messageToHash}`
+          },
+          headers: {
+            'x-auth-key': document.cookie
+          }
+        }, function(data, status) {
+          //clear form fields
+          jQuery('[name=messagetohash]').val("");
+
+          // get answer
+          let hashedMessage = JSON.parse(JSON.stringify(data)).hashedMessage;
+
+          //print to screen
+          jQuery('#hash-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Hashed message: <span class="preformatted">${hashedMessage}</span></p>`);
+
+        }).fail(function(xhr, status, error) {
+          console.log(error);
+          jQuery('[name=messagetohash]').val("");
+          jQuery('#hash-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
         })
       })
 

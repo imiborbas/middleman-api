@@ -216,7 +216,6 @@ app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
   })
 })
 
-// TODO
 // sign data given a wallet address
 app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
   signMessageByAddr(req.params.addr, req.developer._id, req.body.message).then((message) => {
@@ -228,7 +227,6 @@ app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
   res.status(400).send();
 })
 
-// TODO
 // sign data given wallet id
 app.post('/wallets/:id/sign', authenticate, (req, res) => {
   signMessage(req.params.id, req.developer._id, req.body.message).then((message) => {
