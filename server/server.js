@@ -21,6 +21,7 @@ const {signTransaction} = require('./wallet-api-functions');
 const {signTransactionByAddr} = require('./wallet-api-functions');
 const {recoverTransactionById} = require('./wallet-api-functions');
 const {recoverTransactionByAddr} = require('./wallet-api-functions');
+const {hashMessage} = require('./wallet-api-functions');
 const {getWalletBalance} = require('./get-balance');
 const {authenticate} = require('./middleware/authenticate');
 
@@ -179,7 +180,6 @@ app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
   res.status(400).send();
 })
 
-// TODO
 // recoverTxn by wallet by addr
 app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) => {
   recoverTransactionByAddr(req.body.rawTransaction, req.params.addr, req.developer._id).then((address) => {
@@ -189,7 +189,6 @@ app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) =
   })
 })
 
-// TODO
 // recoverTxn by wallet by wallet id
 app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
   recoverTransactionById(req.body.rawTransaction, req.params.id, req.developer._id).then((address) => {
@@ -202,13 +201,21 @@ app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
 // TODO
 // hashmessage given a wallet addr
 app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
-
+  hashMessage(req.body.message).then((hashedMessage) => {
+    res.send({hashedMessage});
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
 })
 
 // TODO
 // hashmessage given a wallet id
 app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
-
+  hashMessage(req.body.message).then((hashedMessage) => {
+    res.send({hashedMessage});
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
 })
 
 // TODO

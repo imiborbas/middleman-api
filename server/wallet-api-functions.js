@@ -127,11 +127,22 @@ var recoverTransactionByAddr = (rawTxn, walletAddr, developerId) => {
   })
 }
 
+var hashMessage = (message) => {
+  return new Promise((resolve, reject) => {
+    resolve(web3.eth.accounts.hashMessage(message));
+  }).catch((e) => {
+    console.log(e);
+    reject(e);
+  })
+}
+
+
 module.exports = {
   signMessage,
   signMessageByAddr,
   signTransaction,
   signTransactionByAddr,
   recoverTransactionById,
-  recoverTransactionByAddr
+  recoverTransactionByAddr,
+  hashMessage
 };
