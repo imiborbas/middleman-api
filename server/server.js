@@ -198,7 +198,6 @@ app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
   })
 })
 
-// TODO
 // hashmessage given a wallet addr
 app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
   hashMessage(req.body.message).then((hashedMessage) => {
@@ -208,7 +207,6 @@ app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
   })
 })
 
-// TODO
 // hashmessage given a wallet id
 app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
   hashMessage(req.body.message).then((hashedMessage) => {
@@ -221,13 +219,25 @@ app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
 // TODO
 // sign data given a wallet address
 app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
-
+  signMessageByAddr(req.params.addr, req.developer._id, req.body.message).then((message) => {
+    res.send({message});
+  }, (err) => {
+    res.status(400).send();
+  })
+  }, (err) => {
+  res.status(400).send();
 })
 
 // TODO
 // sign data given wallet id
 app.post('/wallets/:id/sign', authenticate, (req, res) => {
-
+  signMessage(req.params.id, req.developer._id, req.body.message).then((message) => {
+    res.send({message});
+  }, (err) => {
+    res.status(400).send();
+  })
+  }, (err) => {
+  res.status(400).send();
 })
 
 // TODO
@@ -251,6 +261,7 @@ app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
   });
 });
 
+// TODO: this can be deleted, ui will need to be updated
 // Sign a message
 // req.body must include message to sign
 app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
@@ -263,6 +274,7 @@ app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
   res.status(400).send();
 })
 
+// TODO: this can be deleted, ui will need to be updated
 // Sign a message by wallet address
 app.post('/wallets/address/:addr/sign_message', authenticate, (req, res) => {
   signMessageByAddr(req.params.addr, req.developer._id, req.body.message).then((message) => {
