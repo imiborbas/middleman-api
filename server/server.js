@@ -19,6 +19,8 @@ const {signMessage} = require('./wallet-api-functions');
 const {signMessageByAddr} = require('./wallet-api-functions');
 const {signTransaction} = require('./wallet-api-functions');
 const {signTransactionByAddr} = require('./wallet-api-functions');
+const {recoverTransactionById} = require('./wallet-api-functions');
+const {recoverTransactionByAddr} = require('./wallet-api-functions');
 const {getWalletBalance} = require('./get-balance');
 const {authenticate} = require('./middleware/authenticate');
 
@@ -151,7 +153,6 @@ app.post('/wallets', authenticate, (req, res) => {
   })
 })
 
-// TODO
 // signTxn by wallet by addr
 app.post('/wallets/address/:addr/signTransaction', authenticate, (req, res) => {
   signTransactionByAddr(req.params.addr, req.developer._id, req.body.transaction).then((signedTransaction) => {
@@ -181,13 +182,21 @@ app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
 // TODO
 // recoverTxn by wallet by addr
 app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) => {
-
+  recoverTransactionByAddr(req.body.rawTransaction, req.params.addr, req.developer._id).then((address) => {
+    res.send({address});
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
 })
 
 // TODO
 // recoverTxn by wallet by wallet id
 app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
-
+  recoverTransactionById(req.body.rawTransaction, req.params.id, req.developer._id).then((address) => {
+    res.send({address});
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
 })
 
 // TODO
