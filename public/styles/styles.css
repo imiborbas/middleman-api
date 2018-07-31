@@ -1,8 +1,10 @@
 body {
-  --blue: #518EFC;
+  --blue: #3c465d;
   --dk-blue: #4282F4;
-  --very-dark-blue: #434f67;
-  --light-blue: #95BAFD;
+  --very-dark-blue: #2c364a;
+  --green-for-api-card: rgb(154, 199, 183);
+  --button-grey: #fafafa;
+  --light-blue: #7f90b5;
   --bg-grey: #F5F6FA;
   --light-grey: #CCC;
   --black: #4C4C4C;
@@ -12,6 +14,7 @@ body {
   --light-red: rgb(255, 234, 232);
   --med-red: #ca918c;
   --dark-red: #ff5722;
+  --purple: #e4e9fb;
 }
 
 body {
@@ -37,7 +40,7 @@ body {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: var(--blue);
+  background-color: var(--very-dark-blue);
   overflow-x: hidden; /* disables horizontal scroll */
   padding-top: 20px;
   font-weight: 300;
@@ -83,7 +86,7 @@ li a, .nav-bar h3 {
 }
 
 li:hover, li:active, .nav-bar-active {
-    background-color: var(--dk-blue);
+    background-color: var(--blue);
     color: white; /* this doesn't work for some reason */
 }
 
@@ -101,6 +104,7 @@ li a:hover, li a:active {
   bottom: 20px;
   left: -20px;
   font-size: 0.8em;
+  width: max-content;
 }
 
 #nav-bar__email:hover {
@@ -191,8 +195,8 @@ li a:hover, li a:active {
 
 button {
   margin: 0 auto;
-  background-color: var(--light-blue);
-  color: white;
+  background-color: var(--button-grey);
+  color: var(--blue);
   border: 0;
   cursor: pointer;
   outline: none;
@@ -207,19 +211,18 @@ button {
 }
 
 button:hover {
-  background-color: var(--blue);
+  background-color: var(--bg-grey);
 }
 
 button:active {
-  background-color: var(--dk-blue);
+  background-color: #d7d8dd;
 }
 
 .card-api-instructions {
   padding: 1em;
   /* background: linear-gradient(90deg, #2196F3, #3F51B5); */
-  background-color: var(--very-dark-blue);
-  border-top: 1px solid var(--bg-grey);
-  color: white;
+  background-color: var(--bg-grey);
+  border-top: 1px solid #d7d8dd;
   overflow-wrap: break-word;
 }
 
@@ -228,12 +231,10 @@ button:active {
   right: 1em;
   bottom: -3px;
   padding-top: 0.3em;
-  color: white;
 }
 
 .card-api-instructions__code-sample {
     width: 90%;
-    color: white;
 }
 
 .card-api-instructions .material-icons {
@@ -275,8 +276,9 @@ th, td {
 }
 
 .wallet-table th {
-  color: white;
-  background-color: var(--blue);
+  color: var(--black);
+  background-color: var(--purple);
+  display: none;
 }
 
 .wallet-table td {
@@ -289,6 +291,10 @@ th, td {
 
 .wallet-table tr:nth-child(odd) {
   background-color: white;
+}
+
+.wallet-table .card-api-instructions {
+  display: none;
 }
 
 .message-box {
@@ -376,7 +382,7 @@ th, td {
 }
 
 .auth-container .card {
-  background: linear-gradient(90deg, var(--dk-blue) 0%, var(--blue) 100%);
+  background-color: var(--blue);
 }
 
 .auth-container .card-form {
@@ -401,7 +407,7 @@ th, td {
   font-weight: bold;
   width: fit-content;
   margin: 0 auto;
-  color: var(--blue);
+  color: var(--light-blue);
   text-transform: lowercase;
 }
 
@@ -466,7 +472,7 @@ th, td {
   .card-api-instructions__code-sample {
       width: 70%;
       overflow-wrap: break-word;
-      color: white;
+      color: var(--blue);
   }
 
   .card-api-instructions button {
