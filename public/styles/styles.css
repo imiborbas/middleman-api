@@ -48,13 +48,12 @@ body {
 }
 
 .logo {
-  position: relative;
-  top: 25px;
-  padding-left: 30%;
+  display: block;
+  margin: 0 auto;
   fill: white;
-  display: inline-block;
-  padding-bottom: 20px;
   width: 25%;
+  padding-top: 1.5em;
+  padding-bottom: 0.5em;
 }
 
 .title-box {
