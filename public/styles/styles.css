@@ -47,14 +47,18 @@ body {
 }
 
 .logo {
-  width: 3em;
   position: relative;
-  top: 14px;
-  padding-left: 10%;
+  top: 25px;
+  padding-left: 30%;
+  fill: white;
+  display: inline-block;
+  padding-bottom: 20px;
+  width: 25%;
 }
 
 .nav-bar .hidden-xs h3 {
   padding-left: 15%;
+  text-transform: lowercase;
 }
 
 ul {
@@ -108,7 +112,7 @@ li a:hover, li a:active {
 }
 
 #nav-bar__email:hover {
-  background-color: var(--blue);
+  background-color: var(--very-dark-blue);
 }
 
 .material-icons {
@@ -463,10 +467,6 @@ th, td {
 
   .material-icons {
     left: 2px;
-  }
-
-  .logo {
-    padding-left: 0;
   }
 
   .card-api-instructions__code-sample {
