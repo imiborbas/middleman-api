@@ -14,7 +14,8 @@ body {
   --light-red: rgb(255, 234, 232);
   --med-red: #ca918c;
   --dark-red: #ff5722;
-  --purple: #e4e9fb;
+  --purple: rgb(167, 104, 247);
+  --dark-purple: rgb(145, 84, 222);
 }
 
 body {
@@ -54,6 +55,11 @@ body {
   display: inline-block;
   padding-bottom: 20px;
   width: 25%;
+}
+
+.title-box {
+  background-color: var(--purple);
+  padding: 0.4em;
 }
 
 .nav-bar .hidden-xs h3 {
@@ -190,6 +196,15 @@ li a:hover, li a:active {
 
 .card-form button {
   margin: 0;
+}
+
+#wallet-create-button {
+  background-color: var(--purple);
+  color: white;
+}
+
+#wallet-create-button {
+  background-color: var(--dark-purple);
 }
 
 .subtext {
@@ -379,10 +394,18 @@ th, td {
 .auth-container {
   width: 400px;
   margin: 0 auto;
-  padding-top: 3em;
+  padding-top: 5em;
   padding-bottom: 2em;
   padding-left: 1.5em;
   padding-right: 1.5em;
+}
+
+.auth-container .logo {
+  display: block;
+  position: inherit;
+  width: 15%;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .auth-container .card {
@@ -411,8 +434,14 @@ th, td {
   font-weight: bold;
   width: fit-content;
   margin: 0 auto;
-  color: var(--light-blue);
+  color: white;
   text-transform: lowercase;
+  padding-bottom: 10px;
+}
+
+.auth-container .title-box {
+  padding: 0.3em;
+  font-size: 0.8em;
 }
 
 .auth-container p {
@@ -428,6 +457,17 @@ th, td {
   width: 100%;
   text-align: left;
   padding-left: 2.5em;
+  padding-bottom: 20px;
+}
+
+.auth-container button {
+  background-color: var(--purple);
+  color: white;
+  font-weight: bold;
+}
+
+.auth-container button:hover {
+  background-color: var(--dark-purple);
 }
 
 .auth-container .card-content {
@@ -481,6 +521,16 @@ th, td {
 
   .card-api-instructions .material-icons {
     left: -3px;
+  }
+
+  .auth-container {
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .auth-container .card {
+    width: 90%;
+    margin: 0 auto;
   }
 
 }
