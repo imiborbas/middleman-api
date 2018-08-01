@@ -243,7 +243,6 @@
           // clear form field
           jQuery('[name=message]').val("");
           let signedMessage = JSON.parse(JSON.stringify(data)).message;
-          console.log(signedMessage);
 
           //print it to screen
           jQuery('#sign-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
@@ -289,7 +288,6 @@
           jQuery('[name=gas]').val("");
 
           let signedTransaction = JSON.parse(JSON.stringify(data)).signedTransaction;
-          console.log(signedTransaction);
 
           //print it to screen
           jQuery('#sign-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
@@ -327,7 +325,6 @@
 
           // get the answer
           let recoveredTransaction = JSON.parse(JSON.stringify(data)).address;
-          console.log(recoveredTransaction);
 
           //print it to screen
           jQuery('#recover-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>The wallet address that signed the transaction is: <span class="preformatted">${recoveredTransaction}</span></p>`);
