@@ -15,10 +15,12 @@ var createAccountFromKey = (walletId, developerId) => {
     // get the wallet id from req
     getWalletById(walletId, developerId).then((wallet) => {
       // use web3 to create an account from the private key
-      var account = web3.eth.accounts.privateKeyToAccount(wallet.private_key);
+      Wallet.getPrivateKey(wallet.private_key).then((privateKey) => {
+        var account = web3.eth.accounts.privateKeyToAccount(privateKey);
 
-      // return the account
-      resolve(account);
+        // return the account
+        resolve(account);
+      })
 
     }, (err) => {
       reject(err);
@@ -39,7 +41,6 @@ var signMessage = (walletId, developerId, message) => {
 
       // return signed string
       resolve(signedMessage);
-
     }, (err) => {
       reject(err);
     })
