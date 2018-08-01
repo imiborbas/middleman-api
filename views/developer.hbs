@@ -80,6 +80,7 @@
         // get all the user's wallets
 
         let {wallets} = await getWallets(account._id)
+        console.log(wallets);
 
         await Promise.all(wallets.map(async wallet => {
           wallet.balance = await getWalletBalance(wallet._id)

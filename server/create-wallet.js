@@ -5,6 +5,7 @@ var Random = require('random-js');
 
 var {Wallet} = require('./db/models/wallet')
 var {mongoose} = require('./db/mongoose')
+var _ = require('lodash');
 
 var createEntropy= () => {
   var engine = Random.engines.mt19937().autoSeed();

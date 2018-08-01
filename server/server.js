@@ -82,6 +82,12 @@ app.get('/account', (req, res) => {
 // get all wallets by a given developer
 app.get('/wallets', authenticate, (req, res) => {
   getWalletByDeveloper(req.developer._id).then((wallets) => {
+
+    wallets = wallets.map(wallet => {
+      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
+      return pickedObj
+    })
+
     res.send({wallets});
   }).catch((e) => {
     res.status(400).send(e);
@@ -91,6 +97,12 @@ app.get('/wallets', authenticate, (req, res) => {
 // get all wallets for a user
 app.get('/wallets/user/:userid', authenticate, (req, res) => {
  getWalletsByUserId(req.params.userid, req.developer._id).then((wallets) => {
+
+   wallets = wallets.map(wallet => {
+     let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
+     return pickedObj
+   })
+
    res.send({wallets});
  }).catch((e) => {
    res.status(400).send(e);
@@ -100,6 +112,9 @@ app.get('/wallets/user/:userid', authenticate, (req, res) => {
 // get the wallet at an address
 app.get('/wallets/address/:addr', authenticate, (req, res) => {
   getWalletByAddr(req.params.addr, req.developer._id).then((wallet) => {
+
+    wallet =  _.pick(wallet, ['_id', 'address', 'user_id']);
+
     res.send({wallet});
   }).catch((e) => {
     res.status(400).send(e);
@@ -109,6 +124,9 @@ app.get('/wallets/address/:addr', authenticate, (req, res) => {
 // get the wallet by its id
 app.get('/wallets/:id', authenticate, (req, res) => {
   getWalletById(req.params.id, req.developer._id).then((wallet) => {
+
+    wallet = _.pick(wallet, ['_id', 'address', 'user_id']);
+
     res.send({wallet});
   }, (err) => {
     if (err = '404') {
@@ -148,6 +166,7 @@ app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
 // create a wallet
 app.post('/wallets', authenticate, (req, res) => {
   createWallet(req.body.user_id, req.developer._id).then((wallet) => {
+    wallet = _.pick(wallet, ['_id', 'address', 'user_id']);
     res.send({wallet});
   }, (err) => {
     res.status(400).send(err);
@@ -253,7 +272,13 @@ app.post('/wallets/:id/recover', authenticate, (req, res) => {
 // TODO: this can be deleted, ui will need to be updated
 app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
   getWalletByDeveloper(req.developer._id).then((wallets) => {
-      res.send({wallets});
+
+    wallets = wallets.map(wallet => {
+      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
+      return pickedObj
+    })
+
+    res.send({wallets});
   }).catch((e) => {
     res.send(e);
   });

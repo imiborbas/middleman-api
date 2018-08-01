@@ -1,6 +1,7 @@
-var {mongoose} = require('./db/mongoose')
-var {ObjectID} = require('mongodb');
-var {Wallet} = require('./db/models/wallet')
+const {mongoose} = require('./db/mongoose')
+const {ObjectID} = require('mongodb');
+const {Wallet} = require('./db/models/wallet')
+const _ = require('lodash');
 
 var getWalletById = (walletId, developerId) => {
   return new Promise((resolve, reject) => {
@@ -31,6 +32,7 @@ var getWalletByDeveloper = (developerId) => {
 
     Wallet.find({ _developer: developerId }).then((wallets) => {
       if (!wallets) { reject('404') }
+
       resolve(wallets);
     })
   })
@@ -85,6 +87,7 @@ var getWalletsByUserId = (userId, developerId) => {
     }).then((wallets) => {
       // was any wallet actually found?
       if (!wallets) { console.log('no wallets have been created for that user'); reject('404') }
+
       resolve(wallets);
     }, (err) => {
       reject(err);
