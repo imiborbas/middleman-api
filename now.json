@@ -1,0 +1,5 @@
+{
+  "env": {
+    "MONGO_AUTH_TOKEN": "@mongo_auth_token"
+  }
+}
