@@ -40,7 +40,7 @@ WalletSchema.pre('save', function(next) {
 
   if (wallet.isModified('private_key')) {
     // Encrypt
-    var ciphertext = CryptoJS.AES.encrypt(wallet.private_key, 'secret');
+    var ciphertext = CryptoJS.AES.encrypt(wallet.private_key, process.env.ENCRYPTION_KEY);
     wallet.private_key = ciphertext;
     next();
   } else {
@@ -56,7 +56,7 @@ WalletSchema.statics.getPrivateKey = function(private_key) {
 
     return new Promise((resolve, reject) => {
       // Decrypt
-      var bytes  = CryptoJS.AES.decrypt(wallet.private_key.toString(), 'secret');
+      var bytes  = CryptoJS.AES.decrypt(wallet.private_key.toString(), process.env.ENCRYPTION_KEY);
       var plaintext = bytes.toString(CryptoJS.enc.Utf8);
       resolve(plaintext);
     });
