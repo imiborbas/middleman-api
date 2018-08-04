@@ -284,31 +284,6 @@ app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
   });
 });
 
-// TODO: this can be deleted, ui will need to be updated
-// Sign a message
-// req.body must include message to sign
-app.post('/wallets/:id/sign_message', authenticate, (req, res) => {
-  signMessage(req.params.id, req.developer._id, req.body.message).then((message) => {
-    res.send({message});
-  }, (err) => {
-    res.status(400).send();
-  })
-}, (err) => {
-  res.status(400).send();
-})
-
-// TODO: this can be deleted, ui will need to be updated
-// Sign a message by wallet address
-app.post('/wallets/address/:addr/sign_message', authenticate, (req, res) => {
-  signMessageByAddr(req.params.addr, req.developer._id, req.body.message).then((message) => {
-    res.send({message});
-  }, (err) => {
-    res.status(400).send();
-  })
-}, (err) => {
-  res.status(400).send();
-})
-
 // Sign up
 app.post('/developers/signup', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);

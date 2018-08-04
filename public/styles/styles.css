@@ -1,22 +1,10 @@
 body {
-  /* --blue: #3c465d;
-  --dk-blue: #4282F4;
-  --very-dark-blue: #2c364a;
-  --green-for-api-card: rgb(154, 199, 183);
-  --button-grey: #fafafa;
-  --light-blue: #7f90b5;
-  --bg-grey: #F5F6FA;
-  --light-grey: #CCC;
-  --black: #4C4C4C; */
-  --light-green: rgb(209, 239, 210);
+  --light-green: #1BC98E;
   --med-green: #69de69;
   --dark-green: #3eb13e;
-  --light-red: rgb(255, 234, 232);
+  --light-red: #E64759;
   --med-red: #ca918c;
-  --dark-red: #ff5722; /*
-  --purple: rgb(167, 104, 247);
-  --dark-purple: rgb(145, 84, 222); */
-
+  --dark-red: #ff5722;
   --bg-dark: #252830;
   --bg-slightly-lighter: #383c46;
   --dark-text: #51586a;
@@ -339,12 +327,12 @@ th, td {
 }
 
 /* .wallet-table tr:nth-child(even) {
-  background-color: var(--medium-grey);
+background-color: var(--dark-medium-grey);
 } */
 
 
 /* .wallet-table tr:nth-child(odd) {
-  background-color: var(--medium-dark-grey);
+  background-color: var(--dark-medium-grey);
 } */
 
 .wallet-table .card-api-instructions {
@@ -366,13 +354,14 @@ th, td {
 }
 
 .preformatted {
-  border: 1px solid var(--medium-grey);
+  border: 1px solid var(--light-grey);
   border-radius: 2px;
   padding: 0.2em;
-  background-color: var(--light-grey);
+  background-color: var(--bg-slightly-lighter);
   font-family: Consolas, Courier, monospace;
   overflow-wrap: break-word;
   color: var(--standout-color);
+  font-size: 0.8em;
 }
 
 .message-box p {
@@ -381,16 +370,26 @@ th, td {
 
 .success {
   background-color: var(--light-green);
-  border-color: var(--med-green);
-  border-left-color: var(--dark-green);
-  color: var(--dark-green);
+  border: none;
+  color: white;
+}
+
+.success .preformatted {
+  background-color: rgba(255, 255, 255, 0.65);
+  border: none;
+  color: var(--light-green);
 }
 
 .error {
   background-color: var(--light-red);
-  border-color: var(--med-red);
-  border-left-color: var(--dark-red);
-  color: var(--dark-red);
+  border: none;
+  color: white;
+}
+
+.error .preformatted {
+  background-color: rgba(255, 255, 255, 0.65);
+  border: none;
+  color: var(--light-red);
 }
 
 .tabs {

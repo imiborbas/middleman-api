@@ -49,15 +49,39 @@
         return `<tr><td>${createdAt(wallet._id)}</td><td><span class="wallet-address preformatted">${wallet.address}</span></td><td>${wallet.user_id}</td><td>${wallet.balance} ETH</td></tr>`;
       }
 
+      async function getCookie() {
+        let name = '_auth';
+        var dc = document.cookie;
+        var prefix = name + "=";
+        var begin = dc.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = dc.indexOf(prefix);
+            if (begin != 0) return null;
+        }
+        else
+        {
+            begin += 2;
+            var end = document.cookie.indexOf(";", begin);
+            if (end == -1) {
+            end = dc.length;
+            }
+        }
+        // because unescape has been deprecated, replaced with decodeURI
+        //return unescape(dc.substring(begin + prefix.length, end));
+        return decodeURI(dc.substring(begin + prefix.length, end));
+      }
+
       // auth function that redirects user to login if not authed and otherwise returns dev info
       async function auth() {
+        let cookie = await getCookie();
+
         //  if no cookie, redirect to Login
-        if (document.cookie === '') { window.location = '/login'; }
+        if (cookie === '') { window.location = '/login'; }
 
         // otherwise get id
         let developerId = await fetch('/developers/me', {
           headers: {
-            'x-auth-key': document.cookie
+            'x-auth-key': cookie
           }
         }).catch((e) => {
           // error authenticating, redirect the user to login
@@ -100,14 +124,16 @@
           let html = wallets.map(generateTableHTML).join('')
           jQuery('#wallet-table__table__tbody').html(html);
           jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
+
         }
       }()
 
       // get all the wallets that are attached to the logged in developer
       async function getWallets(myDeveloperId) {
+        let cookie = await getCookie();
         let res = await fetch(`/wallets/developer/${myDeveloperId}`, {
           headers: {
-            'x-auth-key': document.cookie
+            'x-auth-key': cookie
           }
         })
 
@@ -116,9 +142,10 @@
 
       // get wallet balance for a wallet
       async function getWalletBalance(walletId) {
+        let cookie = await getCookie();
         let res = await fetch(`/wallets/${walletId}/balance`, {
           headers: {
-            'x-auth-key': document.cookie
+            'x-auth-key': cookie
           }
         })
 
@@ -132,28 +159,18 @@
         return new Date(parseInt(walletId.substring(0, 8), 16) * 1000).toLocaleDateString('en-UK');
       };
 
-    //   when submit the generate wallet form, generate a wallet for the user id
-      jQuery('#wallet-create-button').on('click', function(e) {
-        e.preventDefault();
+      async function createWalletWrapper() {
+        let newWallet = await createWallet();
 
-        // send the request to the create wallet api
-        jQuery.post({
-          url: '/wallets/',
-          type: 'post',
-          data: {
-            "user_id": "demo_user_id"
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
+        if (newWallet === 'There was an error creating a wallet') {
+          jQuery('#wallet-creation-message').addClass('error').addClass.html('<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>');
+        } else {
 
-          jQuery('#wallet-creation-message').addClass('success').addClass('message-box').html(`<i class="material-icons">favorite_border</i><p>Success! Created a wallet at the address <span class="wallet-address preformatted">${data.wallet.address}</span></p>`);
-
+          // success message
+          jQuery('#wallet-creation-message').addClass('success').addClass('message-box').html(`<i class="material-icons">favorite_border</i><p>Success! Created a wallet at the address <span class="wallet-address preformatted">${newWallet.wallet.address}</span></p>`);
           // change the text of the create wallet box
           jQuery('#create-wallet-card-instructions').html('<p id="create-wallet-card-instructions">Create another wallet.<br><span class="subtext">Come on. It\'s fun.</span></p>');
           jQuery('#wallet-create-button').html('+ Create A Wallet');
-
 
           // add the new wallet to the list
           // if first wallet, create the whole table
@@ -161,20 +178,40 @@
           if (jQuery('.wallet-table').html() === '') {
             // this is the first wallet, create the whole table
             let table = jQuery('.wallet-table').append('<table id="wallet-table__table"><thead id="wallet-table__table__thead"><tr><th>Created Date</th><th>Address</th><th>Owner</th></th><th>Balance</th></tr></thead><tbody id="wallet-table__table__tbody"></tbody></table>');
-            let html = `<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`;
+            let html = `<tr><td>${createdAt(newWallet.wallet._id)}</td><td><span class="wallet-address preformatted">${newWallet.wallet.address}</span></td><td>${newWallet.wallet.user_id}</td><td>0 ETH</td></tr>`;
             jQuery('#wallet-table__table__tbody').html(html);
             jQuery('.wallet-table').append('<div class="card-api-instructions"><div class="card-api-instructions__code-sample"><code>curl -X GET "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code></div><button><i class="material-icons">exit_to_app</i>Docs</button></div>');
 
           } else {
-            jQuery('#wallet-table__table__tbody').append(`<tr><td>${createdAt(data.wallet._id)}</td><td><span class="wallet-address preformatted">${data.wallet.address}</span></td><td>${data.wallet.user_id}</td><td>0 ETH</td></tr>`);
+            jQuery('#wallet-table__table__tbody').append(`<tr><td>${createdAt(newWallet.wallet._id)}</td><td><span class="wallet-address preformatted">${newWallet.wallet.address}</span></td><td>${newWallet.wallet.user_id}</td><td>0 ETH</td></tr>`);
           }
+        }
+      }
 
-        }).fail(function(xhr, status, error) {
-        // error handling
-          console.log(error);
-          jQuery('#wallet-creation-message').addClass('error').addClass.html('<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>');
-        });
-      })
+      async function createWallet() {
+        let cookie = await getCookie();
+
+        let wallet = await fetch('/wallets', {
+          method: 'POST',
+          headers: {
+            'x-auth-key': cookie,
+            'content-type': 'application/json'
+          },
+          body: '{"user_id": "demo_user"}'
+        }).catch((e) => {
+          console.log(e);
+          return 'There was an error creating a wallet';
+        })
+
+        return wallet.json();
+      }
+
+      //  when submit the generate wallet form, generate a wallet for the user id
+     jQuery('#wallet-create-button').on('click', function(e) {
+       e.preventDefault();
+       createWalletWrapper();
+     });
+
     </script>
   </body>
 </html>

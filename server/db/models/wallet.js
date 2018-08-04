@@ -52,6 +52,7 @@ WalletSchema.statics.getPrivateKey = function(private_key) {
   var Wallet = this;
 
   return Wallet.findOne({private_key}).then((wallet) => {
+
     if (!wallet) { return Promise.reject('no wallet with that key'); }
 
     return new Promise((resolve, reject) => {

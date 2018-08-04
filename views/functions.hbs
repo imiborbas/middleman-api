@@ -168,13 +168,16 @@
 
       // auth function that redirects user to login if not authed and otherwise returns dev info
       async function auth() {
+
+        let cookie = await getCookie();
+
         //  if no cookie, redirect to Login
-        if (document.cookie === '') { window.location = '/login'; }
+        if (cookie === '') { window.location = '/login'; }
 
         // otherwise get id
         let developerId = await fetch('/developers/me', {
           headers: {
-            'x-auth-key': document.cookie
+            'x-auth-key': cookie
           }
         }).catch((e) => {
           // error authenticating, redirect the user to login
@@ -186,6 +189,28 @@
       // helper for generating options for wallets dropdown
       function generateOptionsHTML(wallet) {
         return `<option value=${wallet.address}>${wallet.address}</option>`;
+      }
+
+      async function getCookie() {
+        let name = '_auth';
+        var dc = document.cookie;
+        var prefix = name + "=";
+        var begin = dc.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = dc.indexOf(prefix);
+            if (begin != 0) return null;
+        }
+        else
+        {
+            begin += 2;
+            var end = document.cookie.indexOf(";", begin);
+            if (end == -1) {
+            end = dc.length;
+            }
+        }
+        // because unescape has been deprecated, replaced with decodeURI
+        //return unescape(dc.substring(begin + prefix.length, end));
+        return decodeURI(dc.substring(begin + prefix.length, end));
       }
 
       //main
@@ -210,13 +235,24 @@
 
       // get all the wallets that are attached to the logged in developer
       async function getWallets(myDeveloperId) {
+        let cookie = await getCookie();
         let res = await fetch(`/wallets/developer/${myDeveloperId}`, {
           headers: {
-            'x-auth-key': document.cookie
+            'x-auth-key': cookie
           }
         })
 
         return res.json()
+      }
+
+
+
+      async function recoverTransaction() {
+        let cookie = await getCookie();
+      }
+
+      async function hashMessage() {
+        let cookie = await getCookie();
       }
 
       // ******SIGN MESSAGE******
@@ -229,29 +265,45 @@
         // get wallet address
         let walletAddress = jQuery('#sign-message__form select').val();
 
-        // go sign it
-        jQuery.post({
-          url: `/wallets/address/${walletAddress}/sign_message` ,
-          type: 'post',
-          data: {
-            message: messageToSign
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
-          // clear form field
-          jQuery('[name=message]').val("");
-          let signedMessage = JSON.parse(JSON.stringify(data)).message;
+        signMessageWrapper(messageToSign, walletAddress);
 
-          //print it to screen
-          jQuery('#sign-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
-        }).fail(function(xhr, status, error) {
-          console.log(error);
+      })
+
+      async function signMessageWrapper(messageToSign, walletAddress) {
+        let cookie = await getCookie();
+
+        let signedMessage = await signMessage(messageToSign, walletAddress);
+
+        if (signedMessage === 'There was an error') {
           jQuery('[name=message]').val("");
           jQuery('#sign-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        } else {
+
+          jQuery('[name=message]').val("");
+
+          //print it to screen
+          jQuery('#sign-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Message: <span class="preformatted">${signedMessage.message.message}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedMessage.message.messageHash}</span></p><br><br><p>Signature: <span class="preformatted">${signedMessage.message.signature}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
+        }
+      }
+
+      async function signMessage(messageToSign, walletAddress) {
+        let cookie = await getCookie();
+
+        let res = await fetch(`/wallets/address/${walletAddress}/sign`, {
+          method: 'POST',
+          headers: {
+            'x-auth-key': cookie,
+            'content-type': 'application/json'
+          },
+          body: `{"message": "${messageToSign}"}`
+        }).catch((e) => {
+          console.log(e);
+          return 'There was an error';
         })
-      })
+
+        return res.json();
+      }
+
 
       // ****** SIGN TRANSACTION *****
       jQuery('#sign-transaction__form').on('submit', function(e) {
@@ -267,39 +319,48 @@
         // get wallet address
         let walletAddress = jQuery('#sign-message__form select').val();
 
-        // go sign it
-        jQuery.post({
-          url: `/wallets/address/${walletAddress}/signTransaction` ,
-          type: 'post',
-          data: {
-            "transaction": {
-                "to": transactionToSign.to,
-                "value": transactionToSign.value,
-                "gas": transactionToSign.gas
-              }
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
-          // clear form field
+        signTransactionWrapper(walletAddress, transactionToSign);
+
+      })
+
+      async function signTransactionWrapper(walletAddress, transaction) {
+        let cookie = await getCookie();
+
+        let signedTransaction = await signTransaction(walletAddress, transaction);
+
+        if (signedTransaction === 'There was an error') {
           jQuery('[name=to_addr]').val("");
           jQuery('[name=value]').val("");
           jQuery('[name=gas]').val("");
+          jQuery('#sign-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        } else {
 
-          let signedTransaction = JSON.parse(JSON.stringify(data)).signedTransaction;
+          jQuery('[name=to_addr]').val("");
+          jQuery('[name=value]').val("");
+          jQuery('[name=gas]').val("");
 
           //print it to screen
-          jQuery('#sign-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
-        }).fail(function(xhr, status, error) {
-          console.log(error);
-          jQuery('[name=to_addr]').val("");
-          jQuery('[name=value]').val("");
-          jQuery('[name=gas]').val("");
+          jQuery('#sign-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Raw Transaction: <span class="preformatted">${signedTransaction.signedTransaction.rawTransaction}</span></p><br><br><p>Message Hash: <span class="preformatted">${signedTransaction.signedTransaction.messageHash}</span></p><br><br><p>Wallet Used: <span class="preformatted">${walletAddress}</span></p>`);
+        }
+      }
 
-          jQuery('#sign-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+      async function signTransaction(walletAddress, transaction) {
+        let cookie = await getCookie();
+
+        let res = await fetch(`/wallets/address/${walletAddress}/signTransaction`, {
+          method: 'POST',
+          headers: {
+            'x-auth-key': cookie,
+            'content-type': 'application/json'
+          },
+          body: `{"transaction": { "to": "${transaction.to}", "value": ${transaction.value}, "gas": ${transaction.gas} }}`
+        }).catch((e) => {
+          console.log(e);
+          return 'There was an error';
         })
-      })
+
+        return res.json();
+      }
 
       // ***** RECOVER TRANSACTION *****
       jQuery('#recover-transaction__form').on('submit', function(e) {

@@ -35,7 +35,7 @@
           // if 400/401, redirect the user to /login
           var authToken = data.developer.authToken;
 
-          document.cookie = authToken;
+          document.cookie = `_auth=${authToken}`;
 
           //redirect the user to the developer page
           window.location = '/developers';

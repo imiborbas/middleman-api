@@ -25,6 +25,7 @@ var createWallet = (userId, developerId) => {
     wallet.save().then((wallet) => {
       resolve(wallet);
     }, (err) => {
+      console.log(err);
       reject(err);
     });
   });
