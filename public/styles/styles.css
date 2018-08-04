@@ -182,7 +182,7 @@ li a:hover, li a:active {
 
 .card-content p {
   margin-top: 0;
-  color: var(--grey);
+  color: white;
 }
 
 .card-form {
