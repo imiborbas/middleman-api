@@ -302,7 +302,7 @@
 
         // get transaction to sign
         let transactionToSign = {
-          to: jQuery('[name=to_addr]').val(),
+          to: jQuery('[name=to_addr]').val().trim(),
           value: jQuery('[name=value]').val(),
           gas: jQuery('[name=gas]').val()
         };
@@ -358,7 +358,7 @@
         e.preventDefault();
 
         // get transaction to validate
-        let rawTxn = jQuery('[name=rawTxn]').val();
+        let rawTxn = jQuery('[name=rawTxn]').val().trim();
         let walletAddress = jQuery('#recover-transaction__form select').val();
 
         recoverTransactionWrapper(walletAddress, rawTxn);
