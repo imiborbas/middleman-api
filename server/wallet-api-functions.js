@@ -83,12 +83,8 @@ var signTransaction = (walletId, developerId, transaction) => {
         resolve(result);
       });
 
-    }, (err) => {
-      reject(err);
-    })
-  }, (err) => {
-    reject(err);
-  })
+    }).catch((err) => { reject(err); })
+  }).catch((err) => { reject(err); })
 }
 
 var signTransactionByAddr = (walletAddr, developerId, transaction) => {
@@ -98,12 +94,17 @@ var signTransactionByAddr = (walletAddr, developerId, transaction) => {
     createAccountFromKey(walletId, developerId).then((account) => {
 
       var signedTransaction = account.signTransaction(transaction, account.privateKey, function(err, result) {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
         // return signed string
         resolve(result);
       });
 
     }).catch((err) => { reject(err); })
-  }.catch((err) => { reject(err); })
+    }).catch((err) => { reject(err); })
+  })
 }
 
 var recoverTransactionById = (rawTxn, walletId, developerId) => {
