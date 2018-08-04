@@ -75,7 +75,7 @@
         let {account} = await auth();
 
         // display the user's email in the bottom corner
-        jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="#"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
+        jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="/account"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
 
         // get all the user's wallets
 

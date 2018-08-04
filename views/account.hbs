@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+/account<!DOCTYPE html>
 <html>
   <head>
     {{> head}}
@@ -52,7 +52,7 @@
       let {account} = await auth();
 
       // display the user's email in the top corner
-      jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="#"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
+      jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="/account"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
 
       // display email and authkey on the page
       jQuery('#email-card .card-content').html(`<h4>✉️ Your Email:</h4><span class="preformatted">${account.email}</span>`);
