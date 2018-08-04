@@ -6,5 +6,6 @@
   "env": {
     "MONGO_AUTH_TOKEN": "@mongo_auth_token",
     "ENCRYPTION_KEY": "@encryption_key"
-  }
+  },
+  "name": "Middleman"
 }
