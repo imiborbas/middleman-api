@@ -1,7 +1,7 @@
 {
   "alias": [
-    "middleman.cx",
-    "api.middleman.cx"
+    "api.middleman.cx",
+    "dash.middleman.cx"
   ],
   "env": {
     "MONGO_AUTH_TOKEN": "@mongo_auth_token",

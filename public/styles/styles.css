@@ -1,5 +1,5 @@
 body {
-  --blue: #3c465d;
+  /* --blue: #3c465d;
   --dk-blue: #4282F4;
   --very-dark-blue: #2c364a;
   --green-for-api-card: rgb(154, 199, 183);
@@ -7,20 +7,35 @@ body {
   --light-blue: #7f90b5;
   --bg-grey: #F5F6FA;
   --light-grey: #CCC;
-  --black: #4C4C4C;
+  --black: #4C4C4C; */
   --light-green: rgb(209, 239, 210);
   --med-green: #69de69;
   --dark-green: #3eb13e;
   --light-red: rgb(255, 234, 232);
   --med-red: #ca918c;
-  --dark-red: #ff5722;
+  --dark-red: #ff5722; /*
   --purple: rgb(167, 104, 247);
-  --dark-purple: rgb(145, 84, 222);
+  --dark-purple: rgb(145, 84, 222); */
+
+  --bg-dark: #252830;
+  --bg-slightly-lighter: #383c46;
+  --dark-text: #51586a;
+  --grey: #999;
+  --light-grey: #434857; /* borders and button fill */
+  --medium-grey: #32343e; /* button hover */
+  --dark-medium-grey: #292d39; /* button click */
+
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--bg-grey);
+  /* font-family: 'Roboto', sans-serif; */
+  font-family: 'Old Standard TT', serif;
+  background-color: var(--bg-dark);
+  color: white;
+}
+
+input, button, select, a {
+  outline: 0;
 }
 
 /*  desktop */
@@ -41,7 +56,6 @@ body {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: var(--very-dark-blue);
   overflow-x: hidden; /* disables horizontal scroll */
   padding-top: 20px;
   font-weight: 300;
@@ -85,7 +99,7 @@ li a, .nav-bar h3 {
     display: block;
     text-decoration: none;
     padding-left: 20%;
-    color: var(--light-blue);
+    color: var(--dark-text);
 }
 
 .nav-bar h3 {
@@ -95,7 +109,7 @@ li a, .nav-bar h3 {
 }
 
 li:hover, li:active, .nav-bar-active {
-    background-color: var(--blue);
+    background-color: var(--dark-medium-grey);
     color: white; /* this doesn't work for some reason */
 }
 
@@ -129,7 +143,6 @@ li a:hover, li a:active {
   position: relative;
   width: 100%;
   margin: .5rem 0 1rem 0;
-  background-color: white;
   -webkit-transition: -webkit-box-shadow .25s;
   transition: -webkit-box-shadow .25s;
   transition: box-shadow .25s;
@@ -137,6 +150,7 @@ li a:hover, li a:active {
   border-radius: 2px;
   -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+  border: 1px solid var(--light-grey);
 }
 
 .flex-container {
@@ -162,6 +176,15 @@ li a:hover, li a:active {
   color: var(--black);
 }
 
+.card-content h3 {
+  margin-bottom: 5px;
+}
+
+.card-content p {
+  margin-top: 0;
+  color: var(--grey);
+}
+
 .card-form {
   padding-top: 0;
 }
@@ -173,11 +196,16 @@ li a:hover, li a:active {
 .card-form input {
   outline: 0;
   border: 0;
-  border-bottom: 1px solid var(--black);
-  margin-bottom: 1em;
+  border-bottom: 1px solid var(--light-grey);
   font-size: 0.8em;
   margin-bottom: 1em;
   cursor: text;
+  background-color: inherit;
+  margin-top: 1em;
+  padding-bottom: 0.5em;
+  width: 300px;
+  caret-color: white;
+  color: white;
 }
 
 .dropdown {
@@ -187,9 +215,11 @@ li a:hover, li a:active {
 .dropdown select {
   height: 3em;
   width: 100%;
-  outline: 0;
-  border: 0;
   font-family: Roboto, sans-serif;
+  background-color: var(--bg-dark);
+  color: white;
+  border: 1px solid var(--light-grey);
+  font-family: Consolas, Courier, monospace;
 }
 
 .card-form button {
@@ -197,22 +227,17 @@ li a:hover, li a:active {
 }
 
 #wallet-create-button {
-  background-color: var(--purple);
   color: white;
 }
 
-#wallet-create-button {
-  background-color: var(--dark-purple);
-}
-
 .subtext {
-  color: var(--light-grey);
+  color: var(--grey);
   font-size: 0.7em;
 }
 
 button {
   margin: 0 auto;
-  background-color: var(--button-grey);
+  background-color: var(--light-grey);
   color: var(--blue);
   border: 0;
   cursor: pointer;
@@ -228,19 +253,18 @@ button {
 }
 
 button:hover {
-  background-color: var(--bg-grey);
+  background-color: var(--medium-grey);
 }
 
 button:active {
-  background-color: #d7d8dd;
+  background-color: var(--dark-medium-grey);
 }
 
 .card-api-instructions {
   padding: 1em;
-  /* background: linear-gradient(90deg, #2196F3, #3F51B5); */
-  background-color: var(--bg-grey);
-  border-top: 1px solid #d7d8dd;
+  border-top: 1px solid var(--light-grey);
   overflow-wrap: break-word;
+  font-family: Consolas, Courier, monospace;
 }
 
 .card-api-instructions button {
@@ -261,7 +285,7 @@ button:active {
 h1 {
   font-weight: 400;
   padding-top: 20px;
-  color: var(--black);
+  font-family: 'Roboto', sans-serif;
 }
 
 /*  table */
@@ -281,6 +305,7 @@ h1 {
   width: 100%;
   overflow-wrap: break-word;
   text-align: left;
+  border: 1px solid var(--light-grey);
 }
 
 table, thead, tbody, th, td {
@@ -299,16 +324,17 @@ th, td {
 }
 
 .wallet-table td {
-  color: var(--black);
+  color: grey;
+  border-bottom: 1px solid var(--light-grey);
 }
 
-.wallet-table tr:nth-child(even) {
+/* .wallet-table tr:nth-child(even) {
   background-color: var(--bg-grey);
 }
 
 .wallet-table tr:nth-child(odd) {
   background-color: white;
-}
+} */
 
 .wallet-table .card-api-instructions {
   display: none;
@@ -329,12 +355,13 @@ th, td {
 }
 
 .preformatted {
-  border: 1px solid #eeeeee;
+  border: 1px solid var(--medium-grey);
   border-radius: 2px;
   padding: 0.2em;
-  background-color: #fafafa;
+  background-color: var(--light-grey);
   font-family: Consolas, Courier, monospace;
   overflow-wrap: break-word;
+  color: white;
 }
 
 .message-box p {
@@ -406,26 +433,14 @@ th, td {
   padding: 0;
 }
 
-.auth-container .card {
-  background-color: var(--blue);
+.auth-container .card a {
+  color: inherit;
 }
 
 .auth-container .card-form {
   padding-top: 1em;
   padding-bottom: 0;
   color: white;
-}
-
-.auth-container .card-form .form-field input {
-  background-color: inherit;
-  border-color: white;
-  padding-bottom: 0.3em;
-  padding-top: 1em;
-  color: white;
-}
-
-.auth-container .card-form .form-field input::placeholder {
-  color: var(--light-grey);
 }
 
 .auth-container h1 {
@@ -445,27 +460,26 @@ th, td {
 .auth-container p {
   width: fit-content;
   margin: 0 auto;
-  color: var(--light-grey);
+  color: var(--grey);
   text-transform: lowercase;
-  font-size: 0.8em;
-  padding: 0.8em
+  font-size: 1em;
+  padding: 1em
+}
+
+.auth-container p, .auth-container .form-field {
+  font-size: 1.2em;
 }
 
 .auth-container .link {
   width: 100%;
   text-align: left;
-  padding-left: 2.5em;
+  padding-left: 1.75em;
   padding-bottom: 20px;
 }
 
 .auth-container button {
-  background-color: var(--purple);
   color: white;
   font-weight: bold;
-}
-
-.auth-container button:hover {
-  background-color: var(--dark-purple);
 }
 
 .auth-container .card-content {
@@ -474,14 +488,36 @@ th, td {
 }
 
 .auth-container .card-content a {
-  font-size: 0.8em;
-  color: var(--light-grey);
   text-decoration: none;
+  color: white;
+  font-size: 0.8em;
 }
 
 #email-card .card-content preformatted, #authtoken-card .card-content preformatted {
   overflow-wrap: break-word;
   background-color: var(--bg-grey);
+}
+
+.badge {
+  display: inline-block;
+  padding: .25em .4em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: var(--light-grey);
+  text-transform: uppercase;
+  font-size: 0.5em;
+  margin-left: 0.5em;
+  position: relative;
+  bottom: 6px;
+  font-weight: bold;
+}
+
+h4 {
+  margin-top: 0;
 }
 
 /* small screens */
