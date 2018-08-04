@@ -78,13 +78,17 @@ var signTransaction = (walletId, developerId, transaction) => {
     createAccountFromKey(walletId, developerId).then((account) => {
 
       // use the web3 sign function to sign something
-      var signedTransaction = account.signTransaction(transaction, account.privateKey, function(err, result) {
-        // return signed string
-        resolve(result);
-      });
+      var signedTransaction = account.signTransaction(transaction, account.privateKey);
+      
+      // return signed string
+      resolve(result);
 
     }).catch((err) => { reject(err); })
   }).catch((err) => { reject(err); })
+}
+
+let arbitraryCallbackFn = (err, result) => {
+  console.log(result)
 }
 
 var signTransactionByAddr = (walletAddr, developerId, transaction) => {
@@ -93,14 +97,8 @@ var signTransactionByAddr = (walletAddr, developerId, transaction) => {
     // get the wallet id and create a temp account
     createAccountFromKey(walletId, developerId).then((account) => {
 
-      var signedTransaction = account.signTransaction(transaction, account.privateKey, function(err, result) {
-        if (err) {
-          console.log(err);
-          reject(err);
-        }
-        // return signed string
-        resolve(result);
-      });
+      var signedTransaction = account.signTransaction(transaction, account.privateKey);
+      resolve(signedTransaction);
 
     }).catch((err) => { reject(err); })
     }).catch((err) => { reject(err); })
