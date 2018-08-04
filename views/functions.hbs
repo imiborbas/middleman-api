@@ -410,38 +410,40 @@
         let messageToHash = jQuery('[name=messagetohash]');
         let walletAddress = jQuery('#recover-transaction__form select').val();
 
-        jQuery.post({
-          url: `/wallets/address/${walletAddress}/hashMessage` ,
-          type: 'post',
-          data: {
-            "message": `${messageToHash}`
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
-          //clear form fields
-          jQuery('[name=messagetohash]').val("");
+        hashMessageWrapper(walletAddress, messageToHash);
 
-          // get answer
-          let hashedMessage = JSON.parse(JSON.stringify(data)).hashedMessage;
-
-          //print to screen
-          jQuery('#hash-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Hashed message: <span class="preformatted">${hashedMessage}</span></p>`);
-
-        }).fail(function(xhr, status, error) {
-          console.log(error);
-          jQuery('[name=messagetohash]').val("");
-          jQuery('#hash-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
-        })
       })
 
-      async function hashMessageWrapper() {
+      async function hashMessageWrapper(walletAddress, message) {
         let cookie = await getCookie();
+
+        let hashedMessage = await hashMessage(walletAddress, message);
+
+        if (hashedMessage === 'There was an error') {
+          jQuery('[name=messagetohash]').val("");
+          jQuery('#hash-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        } else {
+          jQuery('[name=messagetohash]').val("");
+          jQuery('#hash-message-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>Hashed message: <span class="preformatted">${hashedMessage.hashedMessage}</span></p>`);
+        }
       }
 
-      async function hashMessage() {
+      async function hashMessage(walletAddress, message) {
         let cookie = await getCookie();
+
+        let res = await fetch(`/wallets/address/${walletAddress}/hashMessage`, {
+          method: 'POST',
+          headers: {
+            'x-auth-key': cookie,
+            'content-type': 'application/json'
+          },
+          body: `{ "message": "${message}" }`
+        }).catch((e) => {
+          console.log(e);
+          return 'There was an error';
+        })
+
+        return res.json();
       }
 
 
