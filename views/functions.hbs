@@ -246,15 +246,6 @@
       }
 
 
-
-      async function recoverTransaction() {
-        let cookie = await getCookie();
-      }
-
-      async function hashMessage() {
-        let cookie = await getCookie();
-      }
-
       // ******SIGN MESSAGE******
       jQuery('#sign-message__form').on('submit', function(e) {
         e.preventDefault();
@@ -370,36 +361,46 @@
         let rawTxn = jQuery('[name=rawTxn]').val();
         let walletAddress = jQuery('#recover-transaction__form select').val();
 
-        jQuery.post({
-          url: `/wallets/address/${walletAddress}/recoverTransaction` ,
-          type: 'post',
-          data: {
-            "rawTransaction": `${rawTxn}`
-          },
-          headers: {
-            'x-auth-key': document.cookie
-          }
-        }, function(data, status) {
+        recoverTransactionWrapper(walletAddress, rawTxn);
 
+      })
+
+      async function recoverTransactionWrapper(walletAddress, rawTxn) {
+        let cookie = await getCookie();
+
+        let recoveredTransaction = await recoverTransaction(walletAddress, rawTxn);
+
+        if (recoveredTransaction === 'There was an error') {
           // clear form fields
           jQuery('[name=rawTxn]').val("");
-
-          // get the answer
-          let recoveredTransaction = JSON.parse(JSON.stringify(data)).address;
-
-          //print it to screen
-          jQuery('#recover-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>The wallet address that signed the transaction is: <span class="preformatted">${recoveredTransaction}</span></p>`);
-
-        }).fail(function(xhr, status, error) {
-          console.log(error);
-
-          // clear form fields
-          jQuery('[name=rawTxn]').val("");
-
           // print error message to screen
           jQuery('#recover-transaction-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
+        } else {
+          // clear form fields
+          jQuery('[name=rawTxn]').val("");
+          //print it to screen
+          jQuery('#recover-transaction-message').addClass('message-box').addClass('success').html(`<i class="material-icons">favorite_border</i><p>Success!</p><br><br><p>The wallet address that signed the transaction is: <span class="preformatted">${recoveredTransaction.address}</span></p>`);
+        }
+      }
+
+      async function recoverTransaction(walletAddress, rawTxn) {
+        let cookie = await getCookie();
+
+        let res = await fetch(`/wallets/address/${walletAddress}/recoverTransaction`, {
+          method: 'POST',
+          headers: {
+            'x-auth-key': cookie,
+            'content-type': 'application/json'
+          },
+          body: `{ "rawTransaction": "${rawTxn}" }`
+        }).catch((e) => {
+          console.log(e);
+          return 'There was an error';
         })
-      })
+
+        return res.json();
+      }
+
 
       // ***** HASH MESSAGE *****
       jQuery('#hash-message__form').on('submit', function(e) {
@@ -434,6 +435,14 @@
           jQuery('#hash-message-message').addClass('message-box').addClass('error').html(`<i class="material-icons">error_outline</i><p>Something went horribly, horribly wrong.</p>`);
         })
       })
+
+      async function hashMessageWrapper() {
+        let cookie = await getCookie();
+      }
+
+      async function hashMessage() {
+        let cookie = await getCookie();
+      }
 
 
     </script>
