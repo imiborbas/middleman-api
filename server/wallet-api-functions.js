@@ -5,7 +5,7 @@ var {getWalletById} = require('./get-wallet-by-id')
 var {getWalletIdByAddr} = require('./get-wallet-by-id')
 var _ = require('lodash');
 
-var Web3 = require('web3');
+var Web3 = require('./web3/web3/src/index.js');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('https://mainnet.infura.io/v3/9425cb4913f540db83c938c05d31dbb4'));
 
@@ -79,7 +79,7 @@ var signTransaction = (walletId, developerId, transaction) => {
 
       // use the web3 sign function to sign something
       var signedTransaction = account.signTransaction(transaction, account.privateKey);
-      
+
       // return signed string
       resolve(result);
 
