@@ -46,7 +46,7 @@
 
         <div class="card-api-instructions">
           <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+            <code>curl -X POST "https://api.middleman.cx/wallets/address/:addr/sign" -H "X-Auth-Key: AUTHKEY" --data '{"message": "secure message"}' </code>
           </div>
           <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
@@ -89,7 +89,7 @@
 
         <div class="card-api-instructions">
           <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+            <code>curl -X POST "https://api.middleman.cx/wallets/address/:addr/signTransaction" -H "X-Auth-Key: AUTHKEY" --data '{"transaction": { "to": "0x8d3e809fbd258083a5ba004a527159da535c8aba", "value": 1, "gas": 2000000 }}'</code>
           </div>
           <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
@@ -122,7 +122,7 @@
 
         <div class="card-api-instructions">
           <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+            <code>curl -X POST "https://api.middleman.cx/wallets/address/:addr/recoverTransaction" -H "X-Auth-Key: AUTHKEY" --data '{ "rawTransaction": "0xf869808504e30b8d101465414033c3f705a9c7b826e596766046ee1183dbc8aeaa68" }' </code>
           </div>
           <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
@@ -155,7 +155,7 @@
 
         <div class="card-api-instructions">
           <div class="card-api-instructions__code-sample">
-            <code>curl -X POST "https://api.middleman.cloud/wallets" -H "X-Auth-Key: AUTHKEY"</code>
+            <code>curl -X POST "https://api.middleman.cx/wallets/address/:addr/hashMessage" -H "X-Auth-Key: AUTHKEY" --data '{"message": "secure message"}'</code>
           </div>
           <button><i class="material-icons">exit_to_app</i>Docs</button>
         </div>
