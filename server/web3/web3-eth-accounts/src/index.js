@@ -129,18 +129,17 @@ Accounts.prototype.privateKeyToAccount = function privateKeyToAccount(privateKey
     return this._addAccountFunctions(Account.fromPrivate(privateKey));
 };
 
-Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, callback) {
-  console.log(typeof callback);
+Accounts.prototype.signTransaction = function signTransaction(tx, privateKey) {
     var _this = this,
         error = false,
         result;
 
-    callback = callback || function () {};
+    // callback = callback || function () {};
 
     if (!tx) {
         error = new Error('No transaction object given!');
 
-        callback(error);
+        // callback(error);
         return Promise.reject(error);
     }
 
@@ -158,7 +157,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         }
 
         if (error) {
-            callback(error);
+            // callback(error);
             return Promise.reject(new Error('"gas" is missing'));
         }
 
@@ -205,7 +204,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             };
 
         } catch(e) {
-            callback(e);
+            // callback(e);
             return Promise.reject(e);
         }
 
