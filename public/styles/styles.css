@@ -553,23 +553,49 @@ h4 {
 
 #doorbell-background {
   background: var(--bg-dark);
+  opacity: 0.8;
 }
 
 #doorbell-container {
   font-family: 'Roboto', sans-serif;
 }
 
+#doorbell-container button {
+  color: white;
+}
+
 #doorbell-form {
-  box-shadow: none;
-  -webkit-box-shadow: none;
+  -webkit-box-shadow: 3px 10px 18px #252323;;
+  box-shadow: 3px 10px 18px #252323;
+  border: none;
+  background-color: var(bg--slightly-lighter);
+}
+
+#doorbell-form legend {
+  color: white;
+  border: none;
 }
 
 #doorbell-form input, #doorbell-form textarea {
   outline:none;
+  background-color: inherit;
+  border: 1px solid var(--grey);
+}
+
+#doorbell-form input::placeholder, #doorbell-form textarea::placeholder {
+  color: white;
+}
+
+#doorbell-form .buttons button {
+  background-color: var(--light-green);
 }
 
 #doorbell-button {
   background-color: var(--dark-text)
+}
+
+#doorbell-powered-by {
+  display: none;
 }
 
 /* table  resizing */
