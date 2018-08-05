@@ -1,4 +1,4 @@
-/account<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     {{> head}}
@@ -6,7 +6,7 @@
   <body>
     <div class="nav-bar">
       <img class="logo hidden-xs" src="https://kelp.nyc3.digitaloceanspaces.com/logo.svg">
-      <span class="hidden-xs"><h3><span class="title-box">Middleman</span>/h3></span>
+      <span class="hidden-xs"><h3><span class="title-box">Middleman</span></h3></span>
       <ul>
         <li id="nav-bar__wallets"><a href="/developers"><i class="material-icons">account_balance_wallet</i><span class="hidden-xs navbar-text"> Wallets</span></a></li>
         <li id="nav-bar__functions"><a href="/functions"><i class="material-icons">attach_money</i><span class="hidden-xs navbar-text"> Functions</span></a></li>
@@ -27,13 +27,14 @@
 
     // auth function that redirects user to login if not authed and otherwise returns dev info
     async function auth() {
+      let cookie = await getCookie();
       //  if no cookie, redirect to Login
-      if (document.cookie === '') { window.location = '/login'; }
+      if (cookie === '') { window.location = '/login'; }
 
       // otherwise get id
       let developerId = await fetch('/developers/me', {
         headers: {
-          'x-auth-key': document.cookie
+          'x-auth-key': cookie
         }
       }).catch((e) => {
         // error authenticating, redirect the user to login
@@ -43,8 +44,31 @@
         return developerId.json()
     }
 
+    async function getCookie() {
+      let name = '_auth';
+      var dc = document.cookie;
+      var prefix = name + "=";
+      var begin = dc.indexOf("; " + prefix);
+      if (begin == -1) {
+          begin = dc.indexOf(prefix);
+          if (begin != 0) return null;
+      }
+      else
+      {
+          begin += 2;
+          var end = document.cookie.indexOf(";", begin);
+          if (end == -1) {
+          end = dc.length;
+          }
+      }
+      // because unescape has been deprecated, replaced with decodeURI
+      //return unescape(dc.substring(begin + prefix.length, end));
+      return decodeURI(dc.substring(begin + prefix.length, end));
+    }
+
     //main
     void async function() {
+      let cookie = await getCookie();
       // make the account link active
       jQuery('#nav-bar__account').addClass('nav-bar-active');
 

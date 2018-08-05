@@ -364,6 +364,10 @@ background-color: var(--dark-medium-grey);
   font-size: 0.8em;
 }
 
+.lowkey {
+  color: var(--grey);
+}
+
 .message-box p {
   display: inline;
 }
@@ -521,6 +525,10 @@ background-color: var(--dark-medium-grey);
   background-color: var(--bg-grey);
 }
 
+#authtoken-card {
+  line-height: 1.6em;
+}
+
 .badge {
   display: inline-block;
   padding: .25em .4em;
@@ -541,6 +549,27 @@ background-color: var(--dark-medium-grey);
 
 h4 {
   margin-top: 0;
+}
+
+#doorbell-background {
+  background: var(--bg-dark);
+}
+
+#doorbell-container {
+  font-family: 'Roboto', sans-serif;
+}
+
+#doorbell-form {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+#doorbell-form input, #doorbell-form textarea {
+  outline:none;
+}
+
+#doorbell-button {
+  background-color: var(--dark-text)
 }
 
 /* table  resizing */
