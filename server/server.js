@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 const hbs = require('hbs');
+const fetch = require('isomorphic-fetch');
 
 const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose')
@@ -290,6 +291,9 @@ app.post('/developers/signup', (req, res) => {
   var developer = new Developer(body);
 
   developer.save().then(() => {
+    // send to ifttt
+    fetch('https://maker.ifttt.com/trigger/middleman_signup/with/key/cPfIOkgdFtHyyGIcKfb_Xy');
+
     return developer.generateAuthToken().then((authToken) => {
       res.header('x-auth-key', authToken).send({developer})
     }, (err) => {
