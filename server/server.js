@@ -5,7 +5,7 @@ const hbs = require('hbs');
 const fetch = require('isomorphic-fetch');
 
 const {ObjectID} = require('mongodb');
-const {mongoose} = require('./db/mongoose')
+const {mongoose} = require('./db/mongoose');
 const {Wallet} = require('./db/models/wallet');
 const {User} = require('./db/models/user');
 const {Developer} = require('./db/models/developer');
@@ -46,37 +46,37 @@ app.get('/login', (req, res) => {
   // render a login page
   res.render('login.hbs', {
     pageTitle: 'Login'
-  })
-})
+  });
+});
 
 app.get('/signup', (req, res) => {
   // render a signup page
   res.render('signup.hbs', {
     pageTitle: 'Sign Up'
-  })
-})
+  });
+});
 
 
 app.get('/developers', (req, res) => {
- // render a dev portal homepage
- res.render('developer.hbs', {
-   pageTitle: 'Middleman Developer Portal'
- })
-})
+  // render a dev portal homepage
+  res.render('developer.hbs', {
+    pageTitle: 'Middleman Developer Portal'
+  });
+});
 
 app.get('/functions', (req, res) => {
- // render a dev portal homepage
- res.render('functions.hbs', {
-   pageTitle: 'Middleman Developer Portal'
- })
-})
+  // render a dev portal homepage
+  res.render('functions.hbs', {
+    pageTitle: 'Middleman Developer Portal'
+  });
+});
 
 app.get('/account', (req, res) => {
   // render an account settings page
   res.render('account.hbs', {
     pageTitle: 'Middleman | Account Settings'
-  })
-})
+  });
+});
 
 // API
 
@@ -85,9 +85,9 @@ app.get('/wallets', authenticate, (req, res) => {
   getWalletByDeveloper(req.developer._id).then((wallets) => {
 
     wallets = wallets.map(wallet => {
-      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
-      return pickedObj
-    })
+      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id']);
+      return pickedObj;
+    });
 
     res.send({wallets});
   }).catch((e) => {
@@ -97,30 +97,30 @@ app.get('/wallets', authenticate, (req, res) => {
 
 // get all wallets for a user
 app.get('/wallets/user/:userid', authenticate, (req, res) => {
- getWalletsByUserId(req.params.userid, req.developer._id).then((wallets) => {
+  getWalletsByUserId(req.params.userid, req.developer._id).then((wallets) => {
 
-   wallets = wallets.map(wallet => {
-     let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
-     return pickedObj
-   })
+    wallets = wallets.map(wallet => {
+      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id']);
+      return pickedObj;
+    });
 
-   res.send({wallets});
- }).catch((e) => {
-   res.status(400).send(e);
- })
-})
+    res.send({wallets});
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 
 // get the wallet at an address
 app.get('/wallets/address/:addr', authenticate, (req, res) => {
   getWalletByAddr(req.params.addr, req.developer._id).then((wallet) => {
 
-    wallet =  _.pick(wallet, ['_id', 'address', 'user_id']);
+    wallet = _.pick(wallet, ['_id', 'address', 'user_id']);
 
     res.send({wallet});
   }).catch((e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
 
 // get the wallet by its id
 app.get('/wallets/:id', authenticate, (req, res) => {
@@ -136,7 +136,7 @@ app.get('/wallets/:id', authenticate, (req, res) => {
       res.status(400).send();
     }
   });
-})
+});
 
 // get balance for a wallet by wallet id
 app.get('/wallets/:id/balance', authenticate, (req, res) => {
@@ -144,10 +144,10 @@ app.get('/wallets/:id/balance', authenticate, (req, res) => {
     res.send({balance});
   }, (err) => {
     res.status(400).send(err);
-  })
-  }, (err) => {
+  });
+}, (err) => {
   res.status(400).send(err);
-})
+});
 
 // get balance for a wallet by its addr
 app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
@@ -160,9 +160,9 @@ app.get('/wallets/address/:addr/balance', authenticate, (req, res) => {
       res.status(400).send(err);
     }, (err) => {
       res.status(400).send(err);
-    })
-  })
-})
+    });
+  });
+});
 
 // create a wallet
 app.post('/wallets', authenticate, (req, res) => {
@@ -171,8 +171,8 @@ app.post('/wallets', authenticate, (req, res) => {
     res.send({wallet});
   }, (err) => {
     res.status(400).send(err);
-  })
-})
+  });
+});
 
 // signTxn by wallet by addr
 app.post('/wallets/address/:addr/signTransaction', authenticate, (req, res) => {
@@ -181,11 +181,11 @@ app.post('/wallets/address/:addr/signTransaction', authenticate, (req, res) => {
   }, (err) => {
     console.log(err);
     res.status(400).send();
-  })
+  });
 }, (err) => {
   console.log(err);
   res.status(400).send();
-})
+});
 
 // signTxn by wallet by wallet id
 app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
@@ -194,11 +194,11 @@ app.post('/wallets/:id/signTransaction', authenticate, (req, res) => {
   }, (err) => {
     console.log(err);
     res.status(400).send();
-  })
+  });
 }, (err) => {
   console.log(err);
   res.status(400).send();
-})
+});
 
 // recoverTxn by wallet by addr
 app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) => {
@@ -206,8 +206,8 @@ app.post('/wallets/address/:addr/recoverTransaction', authenticate, (req, res) =
     res.send({address});
   }).catch((e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
 
 // recoverTxn by wallet by wallet id
 app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
@@ -215,8 +215,8 @@ app.post('/wallets/:id/recoverTransaction', authenticate, (req, res) => {
     res.send({address});
   }).catch((e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
 
 // hashmessage given a wallet addr
 app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
@@ -224,8 +224,8 @@ app.post('/wallets/address/:addr/hashMessage', authenticate, (req, res) => {
     res.send({hashedMessage});
   }).catch((e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
 
 // hashmessage given a wallet id
 app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
@@ -233,8 +233,8 @@ app.post('/wallets/:id/hashMessage', authenticate, (req, res) => {
     res.send({hashedMessage});
   }).catch((e) => {
     res.status(400).send(e);
-  })
-})
+  });
+});
 
 // sign data given a wallet address
 app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
@@ -242,10 +242,10 @@ app.post('/wallets/address/:addr/sign', authenticate, (req, res) => {
     res.send({message});
   }, (err) => {
     res.status(400).send();
-  })
-  }, (err) => {
+  });
+}, (err) => {
   res.status(400).send();
-})
+});
 
 // sign data given wallet id
 app.post('/wallets/:id/sign', authenticate, (req, res) => {
@@ -253,31 +253,31 @@ app.post('/wallets/:id/sign', authenticate, (req, res) => {
     res.send({message});
   }, (err) => {
     res.status(400).send();
-  })
-  }, (err) => {
+  });
+}, (err) => {
   res.status(400).send();
-})
+});
 
 // TODO
 // recover signature given a wallet address
 app.post('/wallets/address/:addr/recover', authenticate, (req, res) => {
 
-})
+});
 
 // TODO
 // recover signature given a wallet id
 app.post('/wallets/:id/recover', authenticate, (req, res) => {
 
-})
+});
 
 // TODO: this can be deleted, ui will need to be updated
 app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
   getWalletByDeveloper(req.developer._id).then((wallets) => {
 
     wallets = wallets.map(wallet => {
-      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id'])
-      return pickedObj
-    })
+      let pickedObj = _.pick(wallet, ['_id', 'address', 'user_id']);
+      return pickedObj;
+    });
 
     res.send({wallets});
   }).catch((e) => {
@@ -295,18 +295,18 @@ app.post('/developers/signup', (req, res) => {
     fetch('https://maker.ifttt.com/trigger/middleman_signup/with/key/cPfIOkgdFtHyyGIcKfb_Xy');
 
     return developer.generateAuthToken().then((authToken) => {
-      res.header('x-auth-key', authToken).send({developer})
+      res.header('x-auth-key', authToken).send({developer});
     }, (err) => {
       console.log(err);
     });
   }, (err) => {
     res.status(400).send();
     console.log(err);
-  })
+  });
 }, (err) => {
   res.status(400).send();
   console.log(err);
-})
+});
 
 // Login
 app.post('/developers/login', (req, res) => {
