@@ -24,68 +24,20 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
+      //main
+      void function() {
+        // make the account link active
+        jQuery('#nav-bar__account').addClass('nav-bar-active');
 
-    // auth function that redirects user to login if not authed and otherwise returns dev info
-    async function auth() {
-      let cookie = await getCookie();
-      //  if no cookie, redirect to Login
-      if (cookie === '') { window.location = '/login'; }
+        // display the user's email in the top corner
+        jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="/account"><span id="user-email" class="hidden-xs navbar-text">{{account._json.email}}</span></a></li>`);
 
-      // otherwise get id
-      let developerId = await fetch('/developers/me', {
-        headers: {
-          'x-auth-key': cookie
-        }
-      }).catch((e) => {
-        // error authenticating, redirect the user to login
-        console.log(e);
-        window.location = '/login';
-      })
-        return developerId.json()
-    }
+        // display email and authkey on the page
+        jQuery('#email-card .card-content').html(`<h4>✉️ Your Email:</h4><span class="preformatted">{{account._json.email}}</span>`);
+        jQuery('#authtoken-card .card-content').html(`<h4>🔑 Your API Token:</h4><span class="preformatted">${document.cookie}</span>`);
+      }();
 
-    async function getCookie() {
-      let name = '_auth';
-      var dc = document.cookie;
-      var prefix = name + "=";
-      var begin = dc.indexOf("; " + prefix);
-      if (begin == -1) {
-          begin = dc.indexOf(prefix);
-          if (begin != 0) return null;
-      }
-      else
-      {
-          begin += 2;
-          var end = document.cookie.indexOf(";", begin);
-          if (end == -1) {
-          end = dc.length;
-          }
-      }
-      // because unescape has been deprecated, replaced with decodeURI
-      //return unescape(dc.substring(begin + prefix.length, end));
-      return decodeURI(dc.substring(begin + prefix.length, end));
-    }
-
-    //main
-    void async function() {
-      let cookie = await getCookie();
-      // make the account link active
-      jQuery('#nav-bar__account').addClass('nav-bar-active');
-
-      //first auth the user. devId is at account._id, email is at account.email
-      let {account} = await auth();
-
-      // display the user's email in the top corner
-      jQuery('.nav-bar ul').append(`<li class="hidden-xs" id="nav-bar__email"><a href="/account"><span id="user-email" class="hidden-xs navbar-text">${account.email}</span></a></li>`);
-
-      // display email and authkey on the page
-      jQuery('#email-card .card-content').html(`<h4>✉️ Your Email:</h4><span class="preformatted">${account.email}</span>`);
-      jQuery('#authtoken-card .card-content').html(`<h4>🔑 Your API Token:</h4><span class="preformatted">${document.cookie}</span>`);
-
-
-    }()
-
-    // display account details
+      // display account details
     </script>
   </body>
 </html>

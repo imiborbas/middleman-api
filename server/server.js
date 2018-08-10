@@ -2,7 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 const hbs = require('hbs');
-const fetch = require('isomorphic-fetch');
+const session = require('express-session');
+const Auth0Strategy = require('passport-auth0');
+const passport = require('passport');
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');
@@ -40,22 +43,65 @@ hbs.registerHelper('getCurrentYear', () => {
   return new Date().getFullYear();
 });
 
+// Session management
+
+const sess = {
+  secret: 'd3b07384d113edec49eaa6238ad5ff00',
+  cookie: {},
+  resave: false,
+  saveUninitialized: true
+};
+
+if (app.get('env') === 'production') {
+  sess.cookie.secure = true; // serve secure cookies, requires https
+}
+
+app.use(session(sess));
+
+// Auth0 setup
+
+const authStrategy = new Auth0Strategy({
+    domain: 'middleman-api.auth0.com',
+    clientID: '40zyricRw8Eq8RMna13Sn4737OVnQhoh',
+    clientSecret: 'Ci1eAHZaqLP10YeiEl0gNyVWI2IXzp2gfhw8PpZ0mgcO8xXK5GYxWN2nyIHXnfc4',
+    callbackURL: 'http://localhost:3000/callback'
+  },
+  (accessToken, refreshToken, extraParams, profile, done) => {
+    return done(null, profile);
+  }
+);
+
+passport.use(authStrategy);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+// User-related actions
+
+app.get('/login', passport.authenticate('auth0', { scope: 'openid email profile' }), (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/callback', passport.authenticate('auth0', { failureRedirect: '/login' }), (req, res) => {
+  if (!req.user) {
+    throw new Error('user null');
+  }
+  res.redirect('/account');
+});
+
+app.get('/developers/me', ensureLoggedIn, (req, res) => {
+  res.send(req.user);
+});
+
 // Views
-
-app.get('/login', (req, res) => {
-  // render a login page
-  res.render('login.hbs', {
-    pageTitle: 'Login'
-  });
-});
-
-app.get('/signup', (req, res) => {
-  // render a signup page
-  res.render('signup.hbs', {
-    pageTitle: 'Sign Up'
-  });
-});
-
 
 app.get('/developers', (req, res) => {
   // render a dev portal homepage
@@ -71,10 +117,11 @@ app.get('/functions', (req, res) => {
   });
 });
 
-app.get('/account', (req, res) => {
+app.get('/account', ensureLoggedIn, (req, res) => {
   // render an account settings page
   res.render('account.hbs', {
-    pageTitle: 'Middleman | Account Settings'
+    pageTitle: 'Middleman | Account Settings',
+    account: req.user
   });
 });
 
@@ -283,46 +330,6 @@ app.get('/wallets/developer/:developerId', authenticate, (req, res) => {
   }).catch((e) => {
     res.send(e);
   });
-});
-
-// Sign up
-app.post('/developers/signup', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
-  var developer = new Developer(body);
-
-  developer.save().then(() => {
-    // send to ifttt
-    fetch('https://maker.ifttt.com/trigger/middleman_signup/with/key/cPfIOkgdFtHyyGIcKfb_Xy');
-
-    return developer.generateAuthToken().then((authToken) => {
-      res.header('x-auth-key', authToken).send({developer});
-    }, (err) => {
-      console.log(err);
-    });
-  }, (err) => {
-    res.status(400).send();
-    console.log(err);
-  });
-}, (err) => {
-  res.status(400).send();
-  console.log(err);
-});
-
-// Login
-app.post('/developers/login', (req, res) => {
-  // find a dev with the email and hashed pw that = plain text pw
-  var body = _.pick(req.body, ['email', 'password']);
-
-  Developer.findByCredentials(body.email, body.password).then((developer) => {
-    // generate a new token and send it back
-    res.header('x-auth-key', developer.authToken).send({developer});
-  }).catch((err) => {
-    res.status(400).send(err);
-  });
-});
-
-app.get('/developers/me', authenticate, (req, res) => {
-  res.send(req.developer);
 });
 
 app.listen(3000, () => {
